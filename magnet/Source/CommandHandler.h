@@ -17,10 +17,9 @@ namespace MG
 		static void HandleCleanCommand();
 		static void HandlePullCommand();
 	private:
-		// Creates a new project by initizaling the template folder and
-		// generating a unique config.yaml file inside of the .magnet folder.
+		// Creates a new project by initializing the template folder and
+		// generating a unique config.yaml file inside the .magnet folder.
 		static void CreateNewProject(const std::string& name, const std::string& type);
-		
 		
 		// Creates a CMakeLists.txt file at the root of the project.
 		static bool GenerateRootCMakeFile();

@@ -1,0 +1,13 @@
+cmake_minimum_required(VERSION 3.16)
+project(MAGNET_PROJECT_NAME)
+
+set(CMAKE_CXX_STANDARD 17)
+
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/${PROJECT_NAME}/Binaries")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/${PROJECT_NAME}/Binaries")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/${PROJECT_NAME}/Binaries")
+
+include_directories("${PROJECT_SOURCE_DIR}/${PROJECT_NAME}/Source")
+
+add_subdirectory("${PROJECT_NAME}/Source")
+add_subdirectory("${PROJECT_NAME}/Dependencies")

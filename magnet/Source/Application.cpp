@@ -70,7 +70,7 @@ namespace MG
 				}
 
 				std::string previousArgument = m_Arguments.list[i - 1];
-				if (previousArgument == "new" || previousArgument == "pull")
+				if (previousArgument == "new" || previousArgument == "pull" || previousArgument == "--list")
 					continue;
 
 				MG_LOG("Invalid command `" + argument + "`. Try `magnet help` for more information.");

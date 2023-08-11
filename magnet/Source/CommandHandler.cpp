@@ -192,6 +192,19 @@ namespace MG
 
 		std::string nextArgument = args->list[index + 1];
 
+		if (nextArgument == "--list")
+		{
+			HandlePullListCommand();
+			return;
+		}
+
+		if (nextArgument == "--help")
+		{
+			MG_LOG("Usage: magnet pull <url>");
+			MG_LOG("       magnet pull --list");
+			return;
+		}
+
 		if (nextArgument.find("https://") != 0)
 		{
 			nextArgument = "https://github.com/" + nextArgument;
@@ -216,6 +229,22 @@ namespace MG
 		MG_LOG("Installed new dependency: " + name);
 
 		GenerateDependencyCMakeFiles();
+	}
+
+	void CommandHandler::HandlePullListCommand()
+	{
+		auto dependencies = Application::GetDependencies();
+
+		if (dependencies.empty())
+		{
+			MG_LOG("No dependencies installed.");
+			return;
+		}
+
+		MG_LOG("Here are all the installed dependencies:");
+
+		for (auto& package : dependencies)
+			std::cout << package << "\n";
 	}
 
 	void CommandHandler::CreateNewProject(const std::string& name, const std::string& type)

@@ -5,3 +5,4 @@
 #include <sstream>
 #include <fstream>
 #include <filesystem>
+#include <cstring>

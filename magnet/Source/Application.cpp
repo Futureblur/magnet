@@ -3,6 +3,7 @@
 #include "yaml-cpp/yaml.h"
 
 #include "CommandHandler.h"
+#include "Core.h"
 
 namespace MG
 {
@@ -53,8 +54,8 @@ namespace MG
 			}
 			else if (argument == "run")
 			{
-				Application::Print("Magnet", "Invalid command `" + argument +
-				                             "`. Did you mean `magnet go` to run your app? If not, try `magnet help` for more information.");
+				MG_LOG("Invalid command `" + argument +
+				       "`. Did you mean `magnet go` to run your app? If not, try `magnet help` for more information.");
 			}
 			else
 			{
@@ -63,8 +64,7 @@ namespace MG
 
 				if (i == 0)
 				{
-					Application::Print("Magnet",
-					                   "No argument provided. Try `magnet help` for more information.");
+					MG_LOG("No argument provided. Try `magnet help` for more information.");
 
 					continue;
 				}
@@ -73,8 +73,7 @@ namespace MG
 				if (previousArgument == "new" || previousArgument == "pull")
 					continue;
 
-				Application::Print("Magnet", "Invalid command `" + argument +
-				                             "`. Try `magnet help` for more information.");
+				MG_LOG("Invalid command `" + argument + "`. Try `magnet help` for more information.");
 			}
 		}
 	}

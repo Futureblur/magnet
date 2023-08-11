@@ -3,6 +3,7 @@
 #include "yaml-cpp/yaml.h"
 
 #include "Application.h"
+#include "Core.h"
 
 namespace MG
 {
@@ -26,8 +27,7 @@ namespace MG
 			std::string name;
 			std::string projectType = "Application";
 
-			Application::Print("Project Wizard",
-			                   "What would you like to name your new C++ project?");
+			MG_LOG_HOST("Project Wizard", "What would you like to name your new C++ project?");
 			Application::PrintPrompt();
 			std::cin >> name;
 
@@ -36,7 +36,7 @@ namespace MG
 
 			do
 			{
-				Application::Print("Project Wizard", "Choose a project type:");
+				MG_LOG_HOST("Project Wizard", "Choose a project type:");
 				std::cout << "- Application (default)\n";
 				std::cout << "- StaticLibrary\n";
 				std::cout << "- SharedLibrary\n";
@@ -56,7 +56,7 @@ namespace MG
 						break;
 					}
 
-					Application::Print("Project Wizard", "Invalid answer.");
+					MG_LOG_HOST("Project Wizard", "Invalid answer.");
 				}
 				else
 					break;
@@ -68,12 +68,11 @@ namespace MG
 
 	void CommandHandler::HandleGenerateCommand()
 	{
-		Application::Print("Magnet", "Generating project files...");
+		MG_LOG("Generating project files...");
 
 		if (!Application::IsRootLevel())
 		{
-			Application::Print("Magnet",
-			                   "In order to generate, run this command at the root of your project, where .magnet can be found.");
+			MG_LOG("In order to generate, run this command at the root of your project, where .magnet can be found.");
 
 			return;
 		}
@@ -85,7 +84,7 @@ namespace MG
 		std::string projectName = Application::GetProjectName();
 		if (projectName.empty())
 		{
-			Application::Print("Magnet", "Generate failed due to unknown project name.");
+			MG_LOG("Generate failed due to unknown project name.");
 			return;
 		}
 
@@ -95,24 +94,22 @@ namespace MG
 		int status = std::system(generateCommand.c_str());
 		if (status != 0)
 		{
-			Application::Print("Magnet",
-			                   "CMake failed to generate project files. See messages above for more information.");
+			MG_LOG("CMake failed to generate project files. See messages above for more information.");
 
 			return;
 		}
 
-		Application::Print("Magnet",
-		                   "Successfully generated project files. Run `magnet build` next.");
+		MG_LOG("Successfully generated project files. Run `magnet build` next.");
 	}
 
 	void CommandHandler::HandleBuildCommand()
 	{
-		Application::Print("Magnet", "Building in debug configuration...");
+		MG_LOG("Building in debug configuration...");
 
 		std::string projectName = Application::GetProjectName();
 		if (projectName.empty())
 		{
-			Application::Print("Magnet", "Build failed due to missing ProjectName.txt file.");
+			MG_LOG("Build failed due to missing ProjectName.txt file.");
 			return;
 		}
 
@@ -121,24 +118,22 @@ namespace MG
 		int status = std::system(command.c_str());
 		if (status != 0)
 		{
-			Application::Print("Magnet",
-			                   "CMake couldn't build the project. See messages above for more information. Have you tried generating your project files first? If not, run `magnet generate`.");
+			MG_LOG("CMake couldn't build the project. See messages above for more information. Have you tried generating your project files first? If not, run `magnet generate`.");
 
 			return;
 		}
 
-		Application::Print("Magnet",
-		                   "Successfully built project. Run `magnet go` to launch your app.");
+		MG_LOG("Successfully built project. Run `magnet go` to launch your app.");
 	}
 
 	void CommandHandler::HandleGoCommand()
 	{
-		Application::Print("Magnet", "Launching project...");
+		MG_LOG("Launching project...");
 
 		std::string projectName = Application::GetProjectName();
 		if (projectName.empty())
 		{
-			Application::Print("Magnet", "Launch failed due to unknown project name.");
+			MG_LOG("Launch failed due to unknown project name.");
 			return;
 		}
 
@@ -149,12 +144,12 @@ namespace MG
 
 	void CommandHandler::HandleCleanCommand()
 	{
-		Application::Print("Magnet", "Clean started...");
+		MG_LOG("Clean started...");
 
 		std::string projectName = Application::GetProjectName();
 		if (projectName.empty())
 		{
-			Application::Print("Magnet", "Clean failed due to unknown project name.");
+			MG_LOG("Clean failed due to unknown project name.");
 			return;
 		}
 
@@ -174,14 +169,14 @@ namespace MG
 
 		if (removedItems == 0)
 		{
-			Application::Print("Magnet", "Looks like your project is already clean. Nice!");
+			MG_LOG("Looks like your project is already clean. Nice!");
 			return;
 		}
 
 		std::stringstream message;
 		message << "Removed " << removedItems << " item" << (removedItems > 1 ? "s" : "") << ".";
 
-		Application::Print("Magnet", message.str());
+		MG_LOG(message.str());
 	}
 
 	void CommandHandler::HandlePullCommand(const CommandLineArguments* args, int index)
@@ -196,7 +191,7 @@ namespace MG
 		std::string projectName = Application::GetProjectName();
 		if (projectName.empty())
 		{
-			Application::Print("Magnet", "Install failed due to unknown project name.");
+			MG_LOG("Install failed due to unknown project name.");
 			return;
 		}
 
@@ -207,8 +202,7 @@ namespace MG
 		/*int status = std::system(command.c_str());
 		if (status != 0)
 		{
-			Application::Print("Magnet",
-			                   "Failed to install dependency. See messages above for more information.");
+			MG_LOG("Failed to install dependency. See messages above for more information.");
 			return;
 		}*/
 
@@ -233,16 +227,14 @@ namespace MG
 			return;
 		}
 
-		// TODO: MAKE COMMAND FOR READING DEPENDENCIES FOR DEBUGGING
-
-		Application::Print("Magnet", "Installed new dependency: " + name);
+		MG_LOG("Installed new dependency: " + name);
 
 		GenerateDependencyCMakeFiles();
 	}
 
 	void CommandHandler::CreateNewProject(const std::string& name, const std::string& type)
 	{
-		Application::Print("Project Wizard", "Creating new C++ project...");
+		MG_LOG_HOST("Project Wizard", "Creating new C++ project...");
 
 		std::string templatePath = "magnet/magnet/Templates/MAGNET_NEW_PROJECT";
 		std::string newPath = Application::GetCurrentWorkingDirectory() + "/" + name;
@@ -277,8 +269,8 @@ namespace MG
 
 		if (!config)
 		{
-			Application::Print("Project Wizard", "Failed to create config.yaml file.");
-			Application::Print("Project Wizard", "Error: " + std::string(std::strerror(errno)));
+			MG_LOG_HOST("Project Wizard", "Failed to create config.yaml file.");
+			MG_LOG_HOST("Project Wizard", "Error: " + std::string(std::strerror(errno)));
 			return;
 		}
 
@@ -286,12 +278,12 @@ namespace MG
 		/*int status = std::system(gitCommand.c_str());
 		if (status != 0)
 		{
-			Application::Print("Project Wizard", "Failed to initialize git repository.");
+			MG_LOG_HOST("Project Wizard", "Failed to initialize git repository.");
 			return;
 		}*/
 
-		Application::Print("Project Wizard", name + " has been created.\nNext steps: `cd " + name +
-		                                     " && magnet generate` to generate project files.");
+		MG_LOG_HOST("Project Wizard", name + " has been created.\nNext steps: `cd " + name +
+		                              " && magnet generate` to generate project files.");
 	}
 
 	bool CommandHandler::GenerateRootCMakeFile()
@@ -299,12 +291,13 @@ namespace MG
 		std::string projectName = Application::GetProjectName();
 		if (projectName.empty())
 		{
-			Application::Print("Magnet", "Generate failed due to unknown project name.");
+			MG_LOG("Generate failed due to unknown project name.");
 			return false;
 		}
 
 		std::ofstream cmakeFile("CMakeLists.txt");
 
+		cmakeFile << "# Generated by Magnet v" << MG_VERSION << "\n\n";
 		cmakeFile << "cmake_minimum_required(VERSION 3.16)\n";
 		cmakeFile << "project(" << projectName << ")\n";
 		cmakeFile << "set(CMAKE_CXX_STANDARD 17)\n";
@@ -330,7 +323,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC "${PROJECT_SOURCE_DIR}/${PROJE
 		std::string projectName = Application::GetProjectName();
 		if (projectName.empty())
 		{
-			Application::Print("Magnet", "Generate failed due to unknown project name.");
+			MG_LOG("Generate failed due to unknown project name.");
 			return false;
 		}
 
@@ -348,6 +341,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC "${PROJECT_SOURCE_DIR}/${PROJE
 
 		std::ofstream cmakeFile(projectName + "/Source/CMakeLists.txt");
 
+		cmakeFile << "# Generated by Magnet v" << MG_VERSION << "\n\n";
 		cmakeFile << "cmake_minimum_required(VERSION 3.16)\n";
 		cmakeFile << "project(" << projectName << ")\n";
 		cmakeFile << "set(CMAKE_CXX_STANDARD 17)\n";
@@ -391,12 +385,13 @@ endif ()
 		std::string projectName = Application::GetProjectName();
 		if (projectName.empty())
 		{
-			Application::Print("Magnet", "Generate failed due to unknown project name.");
+			MG_LOG("Generate failed due to unknown project name.");
 			return false;
 		}
 
 		std::ofstream cmakeFile(projectName + "/Dependencies/CMakeLists.txt");
 
+		cmakeFile << "# Generated by Magnet v" << MG_VERSION << "\n\n";
 		cmakeFile << "cmake_minimum_required(VERSION 3.16)\n";
 		cmakeFile << "project(" << projectName << "_Dependencies)\n";
 

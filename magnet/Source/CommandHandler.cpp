@@ -7,11 +7,11 @@
 namespace MG
 {
 	// TODO: This will later be kept track on in a separate dependency.yaml file
-	static const std::vector <std::string> dependencyDatabase = {
+	static const std::vector<std::string> dependencyDatabase = {
 			"MagnetExample"
 	};
 
-	void CommandHandler::HandleNewCommand(CommandLineArguments* args, int index)
+	void CommandHandler::HandleNewCommand(const CommandLineArguments* args, int index)
 	{
 		bool hasNext = index + 1 < args->count;
 		bool hasNextButOne = index + 2 < args->count;
@@ -184,9 +184,14 @@ namespace MG
 		Application::Print("Magnet", message.str());
 	}
 
-	void CommandHandler::HandlePullCommand()
+	void CommandHandler::HandlePullCommand(const CommandLineArguments* args, int index)
 	{
-		// TODO: This simulates a git submodule add for now
+		bool hasNext = index + 1 < args->count;
+		if (!hasNext)
+		{
+			// TODO: Install all dependencies
+			return;
+		}
 
 		std::string projectName = Application::GetProjectName();
 		if (projectName.empty())
@@ -195,13 +200,44 @@ namespace MG
 			return;
 		}
 
-		std::string dummyPackagePath = "MagnetExample";
-		std::string destinationPath = Application::GetCurrentWorkingDirectory()
-		                              + "/" + projectName + "/Dependencies/MagnetExample";
+		std::string nextArgument = args->list[index + 1];
+		std::string installPath = projectName + "/Dependencies/" + ExtractRepositoryName(nextArgument);
+		std::string command = "git submodule add " + nextArgument + " " + installPath;
 
-		std::filesystem::copy(dummyPackagePath, destinationPath, std::filesystem::copy_options::recursive);
+		/*int status = std::system(command.c_str());
+		if (status != 0)
+		{
+			Application::Print("Magnet",
+			                   "Failed to install dependency. See messages above for more information.");
+			return;
+		}*/
 
-		Application::Print("Magnet", "Installed new dependency.");
+		std::string name = ExtractRepositoryName(nextArgument);
+
+		auto deps = Application::GetDependencies();
+		deps.push_back(name);
+		deps.push_back("name");
+
+		YAML::Emitter out;
+		out << YAML::BeginMap;
+		out << YAML::Key << "dependencies";
+		out << YAML::Value << deps;
+		out << YAML::EndMap;
+
+		std::ofstream dependencyFile(".magnet/dependencies.yaml");
+		dependencyFile << out.c_str();
+
+		if (!dependencyFile)
+		{
+			Application::Print("Magnet", "Failed to update dependencies.yaml file.");
+			return;
+		}
+
+		// TODO: MAKE COMMAND FOR READING DEPENDENCIES FOR DEBUGGING
+
+		Application::Print("Magnet", "Installed new dependency: " + name);
+
+		GenerateDependencyCMakeFiles();
 	}
 
 	void CommandHandler::CreateNewProject(const std::string& name, const std::string& type)
@@ -234,9 +270,25 @@ namespace MG
 		out << YAML::Value << "Debug";
 		out << YAML::EndMap;
 
+		// Create config.yaml file in .magnet folder which does not exist yet
+		std::filesystem::create_directory(name + "/.magnet");
 		std::ofstream config(name + "/.magnet/config.yaml");
 		config << out.c_str();
-		config.close();
+
+		if (!config)
+		{
+			Application::Print("Project Wizard", "Failed to create config.yaml file.");
+			Application::Print("Project Wizard", "Error: " + std::string(std::strerror(errno)));
+			return;
+		}
+
+		std::string gitCommand = "git init " + name;
+		/*int status = std::system(gitCommand.c_str());
+		if (status != 0)
+		{
+			Application::Print("Project Wizard", "Failed to initialize git repository.");
+			return;
+		}*/
 
 		Application::Print("Project Wizard", name + " has been created.\nNext steps: `cd " + name +
 		                                     " && magnet generate` to generate project files.");
@@ -282,7 +334,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC "${PROJECT_SOURCE_DIR}/${PROJE
 			return false;
 		}
 
-		std::vector <std::string> sourceFiles;
+		std::vector<std::string> sourceFiles;
 
 		std::string sourceFilesPath = projectName + "/Source";
 		for (auto& path : std::filesystem::recursive_directory_iterator(sourceFilesPath))
@@ -360,5 +412,13 @@ endif ()
 		cmakeFile.close();
 
 		return true;
+	}
+
+	std::string CommandHandler::ExtractRepositoryName(const std::string& url)
+	{
+		std::string name = url;
+		name = url.substr(url.find_last_of('/') + 1);
+		name = name.substr(0, name.find_last_of('.'));
+		return name;
 	}
 }

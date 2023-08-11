@@ -49,7 +49,7 @@ namespace MG
 			}
 			else if (argument == "pull")
 			{
-				CommandHandler::HandlePullCommand();
+				CommandHandler::HandlePullCommand(&m_Arguments, i);
 			}
 			else if (argument == "run")
 			{
@@ -70,7 +70,7 @@ namespace MG
 				}
 
 				std::string previousArgument = m_Arguments.list[i - 1];
-				if (previousArgument == "new")
+				if (previousArgument == "new" || previousArgument == "pull")
 					continue;
 
 				Application::Print("Magnet", "Invalid command `" + argument +

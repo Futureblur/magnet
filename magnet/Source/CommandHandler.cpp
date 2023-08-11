@@ -134,7 +134,12 @@ namespace MG
 
 		std::string command = "./" + projectName + "/Binaries/Debug/" + projectName;
 
-		std::system(command.c_str());
+		int result = std::system(command.c_str());
+		if (result != 0)
+		{
+			MG_LOG("Failed to launch project. See messages above for more information.");
+			return;
+		}
 	}
 
 	void CommandHandler::HandleCleanCommand()

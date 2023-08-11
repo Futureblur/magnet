@@ -112,9 +112,9 @@ namespace MG
 		if (!IsRootLevel())
 			return {};
 
-		YAML::Node config = YAML::LoadFile(".magnet/config.yaml");
-		if (config["dependencies"])
-			return config["dependencies"].as<std::vector<std::string>>();
+		YAML::Node dependencies = YAML::LoadFile(".magnet/dependencies.yaml");
+		if (dependencies["dependencies"])
+			return dependencies["dependencies"].as<std::vector<std::string>>();
 
 		return {};
 	}

@@ -73,8 +73,8 @@ namespace MG
 				if (previousArgument == "new")
 					continue;
 
-				Application::Print("Magnet", "Invalid command `" + argument
-				                             + "`. Try `magnet help` for more information.");
+				Application::Print("Magnet", "Invalid command `" + argument +
+				                             "`. Try `magnet help` for more information.");
 			}
 		}
 	}
@@ -106,6 +106,18 @@ namespace MG
 			return config["projectType"].as<std::string>();
 
 		return "";
+	}
+
+	std::vector<std::string> Application::GetDependencies()
+	{
+		if (!IsRootLevel())
+			return {};
+
+		YAML::Node config = YAML::LoadFile(".magnet/config.yaml");
+		if (config["dependencies"])
+			return config["dependencies"].as<std::vector<std::string>>();
+
+		return {};
 	}
 
 	bool Application::IsRootLevel()

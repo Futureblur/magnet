@@ -34,5 +34,10 @@ namespace MG
 
 		// Returns the name of the repository from the given URL.
 		static std::string ExtractRepositoryName(const std::string& url);
+
+		// Writes the given dependencies to the .magnet/dependencies file.
+		// If the path is empty, it will write to the default path.
+		static bool WriteDependencyFile(const std::vector<std::string>& dependencies,
+		                                const std::string& path = "");
 	};
 }

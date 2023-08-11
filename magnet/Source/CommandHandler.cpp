@@ -7,11 +7,6 @@
 
 namespace MG
 {
-	// TODO: This will later be kept track on in a separate dependency.yaml file
-	static const std::vector<std::string> dependencyDatabase = {
-			"MagnetExample"
-	};
-
 	void CommandHandler::HandleNewCommand(const CommandLineArguments* args, int index)
 	{
 		bool hasNext = index + 1 < args->count;
@@ -199,33 +194,18 @@ namespace MG
 		std::string installPath = projectName + "/Dependencies/" + ExtractRepositoryName(nextArgument);
 		std::string command = "git submodule add " + nextArgument + " " + installPath;
 
-		/*int status = std::system(command.c_str());
+		int status = std::system(command.c_str());
 		if (status != 0)
 		{
 			MG_LOG("Failed to install dependency. See messages above for more information.");
 			return;
-		}*/
+		}
 
 		std::string name = ExtractRepositoryName(nextArgument);
 
-		auto deps = Application::GetDependencies();
-		deps.push_back(name);
-		deps.push_back("name");
-
-		YAML::Emitter out;
-		out << YAML::BeginMap;
-		out << YAML::Key << "dependencies";
-		out << YAML::Value << deps;
-		out << YAML::EndMap;
-
-		std::ofstream dependencyFile(".magnet/dependencies.yaml");
-		dependencyFile << out.c_str();
-
-		if (!dependencyFile)
-		{
-			Application::Print("Magnet", "Failed to update dependencies.yaml file.");
-			return;
-		}
+		auto dependencies = Application::GetDependencies();
+		dependencies.push_back(name);
+		WriteDependencyFile(dependencies);
 
 		MG_LOG("Installed new dependency: " + name);
 
@@ -273,6 +253,8 @@ namespace MG
 			MG_LOG_HOST("Project Wizard", "Error: " + std::string(std::strerror(errno)));
 			return;
 		}
+
+		WriteDependencyFile({}, name + "/.magnet/dependencies.yaml");
 
 		std::string gitCommand = "git init " + name;
 		/*int status = std::system(gitCommand.c_str());
@@ -368,7 +350,8 @@ endif ()
 
 		cmakeFile << "target_link_libraries(${PROJECT_NAME} PUBLIC";
 
-		for (const auto& package : dependencyDatabase)
+		auto dependencies = Application::GetDependencies();
+		for (const auto& package : dependencies)
 		{
 			cmakeFile << " " << package;
 		}
@@ -397,7 +380,8 @@ endif ()
 
 		cmakeFile << "add_subdirectory(";
 
-		for (const auto& package : dependencyDatabase)
+		auto dependencies = Application::GetDependencies();
+		for (const auto& package : dependencies)
 		{
 			cmakeFile << " " << package;
 		}
@@ -415,5 +399,27 @@ endif ()
 		name = url.substr(url.find_last_of('/') + 1);
 		name = name.substr(0, name.find_last_of('.'));
 		return name;
+	}
+
+	bool CommandHandler::WriteDependencyFile(const std::vector<std::string>& dependencies,
+	                                         const std::string& path)
+	{
+		YAML::Emitter out;
+
+		out << YAML::BeginMap;
+		out << YAML::Key << "dependencies";
+		out << YAML::Value << dependencies;
+		out << YAML::EndMap;
+
+		std::ofstream file(path.empty() ? ".magnet/dependencies.yaml" : path);
+		file << out.c_str();
+
+		if (!file)
+		{
+			MG_LOG("Failed to update dependencies.yaml file.");
+			return false;
+		}
+
+		return true;
 	}
 }

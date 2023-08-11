@@ -191,6 +191,12 @@ namespace MG
 		}
 
 		std::string nextArgument = args->list[index + 1];
+
+		if (nextArgument.find("https://") != 0)
+		{
+			nextArgument = "https://github.com/" + nextArgument;
+		}
+
 		std::string installPath = projectName + "/Dependencies/" + ExtractRepositoryName(nextArgument);
 		std::string command = "git submodule add " + nextArgument + " " + installPath;
 

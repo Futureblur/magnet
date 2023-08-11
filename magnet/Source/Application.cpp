@@ -53,8 +53,7 @@ namespace MG
 			}
 			else if (argument == "run")
 			{
-				Application::Print("Magnet", "Invalid command `" + argument
-				                             +
+				Application::Print("Magnet", "Invalid command `" + argument +
 				                             "`. Did you mean `magnet go` to run your app? If not, try `magnet help` for more information.");
 			}
 			else

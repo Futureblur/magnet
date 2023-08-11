@@ -8,9 +8,7 @@ namespace MG
 	class CommandHandler
 	{
 	public:
-		static void HandleNewCommand(struct CommandLineArguments* args,
-									 int index);
-		
+		static void HandleNewCommand(struct CommandLineArguments* args, int index);
 		static void HandleGenerateCommand();
 		static void HandleBuildCommand();
 		static void HandleGoCommand();

@@ -7,7 +7,7 @@
 namespace MG
 {
 	// TODO: This will later be kept track on in a separate dependency.yaml file
-	static const std::vector<std::string> dependencyDatabase = {
+	static const std::vector <std::string> dependencyDatabase = {
 			"MagnetExample"
 	};
 
@@ -50,9 +50,8 @@ namespace MG
 					std::istringstream stream(input);
 					stream >> projectType;
 
-					if (projectType == "Application"
-					    || projectType == "StaticLibrary"
-					    || projectType == "SharedLibrary")
+					if (projectType == "Application" || projectType == "StaticLibrary" ||
+					    projectType == "SharedLibrary")
 					{
 						break;
 					}
@@ -90,8 +89,8 @@ namespace MG
 			return;
 		}
 
-		std::string generateCommand =
-				"cmake -S . -B " + projectName + "/Build -G Xcode -DCMAKE_BUILD_TYPE=Debug";
+		std::string generateCommand = "cmake -S . -B " + projectName +
+		                              "/Build -G Xcode -DCMAKE_BUILD_TYPE=Debug";
 
 		int status = std::system(generateCommand.c_str());
 		if (status != 0)
@@ -200,8 +199,7 @@ namespace MG
 		std::string destinationPath = Application::GetCurrentWorkingDirectory()
 		                              + "/" + projectName + "/Dependencies/MagnetExample";
 
-		std::filesystem::copy(dummyPackagePath, destinationPath,
-		                      std::filesystem::copy_options::recursive);
+		std::filesystem::copy(dummyPackagePath, destinationPath, std::filesystem::copy_options::recursive);
 
 		Application::Print("Magnet", "Installed new dependency.");
 	}
@@ -240,8 +238,7 @@ namespace MG
 		config << out.c_str();
 		config.close();
 
-		Application::Print("Project Wizard", name + " has been created.\nNext steps: `cd "
-		                                     + name +
+		Application::Print("Project Wizard", name + " has been created.\nNext steps: `cd " + name +
 		                                     " && magnet generate` to generate project files.");
 	}
 
@@ -261,14 +258,14 @@ namespace MG
 		cmakeFile << "set(CMAKE_CXX_STANDARD 17)\n";
 
 		cmakeFile << R"""(
-	set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/${PROJECT_NAME}/Binaries")
-	set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/${PROJECT_NAME}/Binaries")
-	set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/${PROJECT_NAME}/Binaries")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/${PROJECT_NAME}/Binaries")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/${PROJECT_NAME}/Binaries")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/${PROJECT_NAME}/Binaries")
 
-	add_subdirectory("${PROJECT_NAME}/Source")
-	add_subdirectory("${PROJECT_NAME}/Dependencies")
-	 
-	target_include_directories(${PROJECT_NAME} PUBLIC "${PROJECT_SOURCE_DIR}/${PROJECT_NAME}/Source")
+add_subdirectory("${PROJECT_NAME}/Source")
+add_subdirectory("${PROJECT_NAME}/Dependencies")
+
+target_include_directories(${PROJECT_NAME} PUBLIC "${PROJECT_SOURCE_DIR}/${PROJECT_NAME}/Source")
 	 )""";
 
 		cmakeFile.close();
@@ -285,13 +282,13 @@ namespace MG
 			return false;
 		}
 
-		std::vector<std::string> sourceFiles;
+		std::vector <std::string> sourceFiles;
 
 		std::string sourceFilesPath = projectName + "/Source";
 		for (auto& path : std::filesystem::recursive_directory_iterator(sourceFilesPath))
 		{
-			if (path.path().extension() == ".cpp" || path.path().extension() == ".h"
-			    || path.path().extension() == ".hpp")
+			if (path.path().extension() == ".cpp" || path.path().extension() == ".h" ||
+			    path.path().extension() == ".hpp")
 			{
 				sourceFiles.push_back(path.path().filename().string());
 			}
@@ -312,15 +309,15 @@ namespace MG
 		cmakeFile << ")\n";
 
 		cmakeFile << R"""(
-	# Set rpath relative to app
-	if (NOT MSVC)
-		set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "-Wl,-rpath,./")
-	else ()
-		set_target_properties(${PROJECT_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/${PROJECT_NAME}/Binaries/Debug")
-	endif ()
+# Set rpath relative to app
+if (NOT MSVC)
+	set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "-Wl,-rpath,./")
+else ()
+	set_target_properties(${PROJECT_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/${PROJECT_NAME}/Binaries/Debug")
+endif ()
 
-	# Precompiled headers
-	# target_precompile_headers(${PROJECT_NAME} PUBLIC PCH.h)
+# Precompiled headers
+# target_precompile_headers(${PROJECT_NAME} PUBLIC PCH.h)
 		)""";
 
 		cmakeFile << "target_link_libraries(${PROJECT_NAME} PUBLIC";

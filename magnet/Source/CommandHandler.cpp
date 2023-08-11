@@ -263,12 +263,12 @@ namespace MG
 		WriteDependencyFile({}, name + "/.magnet/dependencies.yaml");
 
 		std::string gitCommand = "git init " + name;
-		/*int status = std::system(gitCommand.c_str());
+		int status = std::system(gitCommand.c_str());
 		if (status != 0)
 		{
 			MG_LOG_HOST("Project Wizard", "Failed to initialize git repository.");
 			return;
-		}*/
+		}
 
 		MG_LOG_HOST("Project Wizard", name + " has been created.\nNext steps: `cd " + name +
 		                              " && magnet generate` to generate project files.");

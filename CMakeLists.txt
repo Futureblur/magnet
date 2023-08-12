@@ -7,6 +7,8 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "magnet/Binaries")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "magnet/Binaries")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "magnet/Binaries")
 
+set(YAML_CPP_BUILD_TOOLS OFF CACHE BOOL "Disable yaml-cpp build tools")
+
 include_directories("magnet/Source")
 
 add_subdirectory("magnet/Source")

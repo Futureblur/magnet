@@ -39,7 +39,7 @@ jobs:
 
       - name: Build
         # Build your program with the given configuration
-        run: cmake --build ${{github.workspace}}/build --config ${{env.build_type}}
+        run: cmake --build ${{github.workspace}}/build --config ${{matrix.build_type}}
 
       - name: Test
         working-directory: ${{github.workspace}}/build

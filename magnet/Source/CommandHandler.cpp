@@ -68,7 +68,6 @@ namespace MG
 		if (!Application::IsRootLevel())
 		{
 			MG_LOG("In order to generate, run this command at the root of your project, where .magnet can be found.");
-
 			return;
 		}
 
@@ -103,13 +102,6 @@ namespace MG
 		GenerateRootCMakeFile();
 		GenerateCMakeFiles();
 		GenerateDependencyCMakeFiles();
-
-		std::string projectName = Application::GetProjectName();
-		if (projectName.empty())
-		{
-			MG_LOG("Generate failed due to unknown project name.");
-			return;
-		}
 
 		std::string generateCommand = "cmake -S . -B " + projectName +
 		                              "/Build -G Xcode -DCMAKE_BUILD_TYPE=Debug";
@@ -146,7 +138,7 @@ namespace MG
 			return;
 		}
 
-		MG_LOG("Successfully built project. Run `magnet go` to launch your app.");
+		MG_LOG("Build successful. Run `magnet go` to launch your app.");
 	}
 
 	void CommandHandler::HandleGoCommand()

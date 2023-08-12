@@ -17,6 +17,7 @@ namespace MG
 		static void HandleCleanCommand();
 		static void HandlePullCommand(const CommandLineArguments* args, int index);
 		static void HandlePullListCommand();
+		static void HandleRemoveCommand(const CommandLineArguments* args, int index);
 	private:
 		// Creates a new project by initializing the template folder and
 		// generating a unique config.yaml file inside the .magnet folder.

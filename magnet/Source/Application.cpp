@@ -52,6 +52,10 @@ namespace MG
 			{
 				CommandHandler::HandlePullCommand(&m_Arguments, i);
 			}
+			else if (argument == "remove")
+			{
+				CommandHandler::HandleRemoveCommand(&m_Arguments, i);
+			}
 			else if (argument == "run")
 			{
 				MG_LOG("Invalid command `" + argument +
@@ -70,7 +74,8 @@ namespace MG
 				}
 
 				std::string previousArgument = m_Arguments.list[i - 1];
-				if (previousArgument == "new" || previousArgument == "pull" || previousArgument == "--list")
+				if (previousArgument == "new" || previousArgument == "pull" || previousArgument == "--list" ||
+				    previousArgument == "remove")
 					continue;
 
 				MG_LOG("Invalid command `" + argument + "`. Try `magnet help` for more information.");

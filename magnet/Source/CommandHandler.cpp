@@ -279,6 +279,60 @@ namespace MG
 			std::cout << package << "\n";
 	}
 
+	void CommandHandler::HandleRemoveCommand(const CommandLineArguments* args, int index)
+	{
+		bool hasNext = index + 1 < args->count;
+		if (!hasNext)
+		{
+			MG_LOG("Usage: magnet remove <dependency>");
+			return;
+		}
+
+		std::string projectName = Application::GetProjectName();
+		if (projectName.empty())
+		{
+			MG_LOG("Remove failed due to unknown project name.");
+			return;
+		}
+
+		std::string nextArgument = args->list[index + 1];
+
+		std::string installPath = projectName + "/Dependencies/" + nextArgument;
+		std::string deinitCommand = "git submodule deinit -f " + installPath;
+
+		int status = std::system(deinitCommand.c_str());
+		if (status != 0)
+		{
+			MG_LOG("Failed to remove dependency. See messages above for more information.");
+			return;
+		}
+
+		std::string gitRemoveCommand = "git rm -f " + installPath;
+		status = std::system(gitRemoveCommand.c_str());
+		if (status != 0)
+		{
+			MG_LOG("Failed to remove dependency. See messages above for more information.");
+			return;
+		}
+
+		std::string removeGitModuleCommand = "rm -rf .git/modules/" + installPath;
+		status = std::system(removeGitModuleCommand.c_str());
+		if (status != 0)
+		{
+			MG_LOG("Failed to remove dependency. See messages above for more information.");
+			return;
+		}
+
+		auto dependencies = Application::GetDependencies();
+		dependencies.erase(std::remove(dependencies.begin(), dependencies.end(), nextArgument),
+		                   dependencies.end());
+		WriteDependencyFile(dependencies);
+
+		MG_LOG("Removed dependency: " + nextArgument);
+
+		HandleGenerateCommand();
+	}
+
 	void CommandHandler::CreateNewProject(const std::string& name, const std::string& type)
 	{
 		MG_LOG_HOST("Project Wizard", "Creating new C++ project...");

@@ -3,7 +3,8 @@ project(magnet)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(magnet EntryPoint.cpp Application.h Application.cpp CommandHandler.h CommandHandler.cpp)
+add_executable(magnet EntryPoint.cpp Application.h Application.cpp CommandHandler.h CommandHandler.cpp
+        Core.h)
 
 # Set rpath relative to app
 if (NOT MSVC)

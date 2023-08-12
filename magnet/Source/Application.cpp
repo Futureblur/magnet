@@ -3,6 +3,7 @@
 #include "yaml-cpp/yaml.h"
 
 #include "CommandHandler.h"
+#include "Core.h"
 
 namespace MG
 {
@@ -49,12 +50,16 @@ namespace MG
 			}
 			else if (argument == "pull")
 			{
-				CommandHandler::HandlePullCommand();
+				CommandHandler::HandlePullCommand(&m_Arguments, i);
+			}
+			else if (argument == "remove")
+			{
+				CommandHandler::HandleRemoveCommand(&m_Arguments, i);
 			}
 			else if (argument == "run")
 			{
-				Application::Print("Magnet", "Invalid command `" + argument +
-				                             "`. Did you mean `magnet go` to run your app? If not, try `magnet help` for more information.");
+				MG_LOG("Invalid command `" + argument +
+				       "`. Did you mean `magnet go` to run your app? If not, try `magnet help` for more information.");
 			}
 			else
 			{
@@ -63,25 +68,24 @@ namespace MG
 
 				if (i == 0)
 				{
-					Application::Print("Magnet",
-					                   "No argument provided. Try `magnet help` for more information.");
+					MG_LOG("No argument provided. Try `magnet help` for more information.");
 
 					continue;
 				}
 
 				std::string previousArgument = m_Arguments.list[i - 1];
-				if (previousArgument == "new")
+				if (previousArgument == "new" || previousArgument == "pull" || previousArgument == "--list" ||
+				    previousArgument == "remove")
 					continue;
 
-				Application::Print("Magnet", "Invalid command `" + argument
-				                             + "`. Try `magnet help` for more information.");
+				MG_LOG("Invalid command `" + argument + "`. Try `magnet help` for more information.");
 			}
 		}
 	}
 
 	std::string Application::GetCurrentWorkingDirectory()
 	{
-		return std::filesystem::current_path();
+		return std::filesystem::current_path().string();
 	}
 
 	std::string Application::GetProjectName()
@@ -106,6 +110,18 @@ namespace MG
 			return config["projectType"].as<std::string>();
 
 		return "";
+	}
+
+	std::vector<std::string> Application::GetDependencies()
+	{
+		if (!IsRootLevel())
+			return {};
+
+		YAML::Node dependencies = YAML::LoadFile(".magnet/dependencies.yaml");
+		if (dependencies["dependencies"])
+			return dependencies["dependencies"].as<std::vector<std::string>>();
+
+		return {};
 	}
 
 	bool Application::IsRootLevel()

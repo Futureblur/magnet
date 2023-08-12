@@ -72,6 +72,34 @@ namespace MG
 			return;
 		}
 
+		std::string projectName = Application::GetProjectName();
+		if (projectName.empty())
+		{
+			MG_LOG("Generate failed due to unknown project name.");
+			return;
+		}
+
+		std::string dependenciesPath = projectName + "/Dependencies";
+		bool hasMissingDependencies = false;
+		if (std::filesystem::exists(dependenciesPath))
+		{
+			auto dependencies = Application::GetDependencies();
+			for (const auto& package : dependencies)
+			{
+				std::string path = dependenciesPath + "/" + package;
+				if (!std::filesystem::exists(path))
+				{
+					hasMissingDependencies = true;
+				}
+			}
+		}
+
+		if (hasMissingDependencies)
+		{
+			MG_LOG("Generate failed due to missing dependencies. Run `magnet pull` to install them.");
+			return;
+		}
+
 		GenerateRootCMakeFile();
 		GenerateCMakeFiles();
 		GenerateDependencyCMakeFiles();

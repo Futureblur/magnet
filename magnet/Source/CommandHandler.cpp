@@ -184,7 +184,15 @@ namespace MG
 		bool hasNext = index + 1 < args->count;
 		if (!hasNext)
 		{
-			// TODO: Install all dependencies
+			int status = std::system("git submodule update --init --recursive");
+			if (status != 0)
+			{
+				MG_LOG("Failed to install dependencies. See messages above for more information.");
+				return;
+			}
+
+			MG_LOG("Successfully installed all dependencies.");
+			HandleGenerateCommand();
 			return;
 		}
 

@@ -393,17 +393,20 @@ endif ()
 
 # Precompiled headers
 # target_precompile_headers(${PROJECT_NAME} PUBLIC PCH.h)
-		)""";
-
-		cmakeFile << "target_link_libraries(${PROJECT_NAME} PUBLIC";
+)""";
 
 		auto dependencies = Application::GetDependencies();
-		for (const auto& package : dependencies)
+		if (!dependencies.empty())
 		{
-			cmakeFile << " " << package;
-		}
+			cmakeFile << "target_link_libraries(${PROJECT_NAME}";
 
-		cmakeFile << ")";
+			for (const auto& package : dependencies)
+			{
+				cmakeFile << " " << package;
+			}
+
+			cmakeFile << ")";
+		}
 
 		cmakeFile.close();
 
@@ -448,7 +451,6 @@ endif ()
 		}
 
 		cmakeFile.close();
-
 		return true;
 	}
 

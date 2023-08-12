@@ -433,7 +433,19 @@ endif ()
 				cmakeFile << "add_subdirectory(" << package << ")\n";
 			}
 
-		cmakeFile << " )";
+			cmakeFile << "target_include_directories(" << projectName << " PUBLIC\n";
+
+			for (const auto& package : dependencies)
+			{
+				std::string includePath = projectName + "/Dependencies/" + package + "/include";
+				if (!std::filesystem::exists(includePath))
+					continue;
+
+				cmakeFile << "      \"" << package << "/include" << "\"\n";
+			}
+
+			cmakeFile << ")\n";
+		}
 
 		cmakeFile.close();
 

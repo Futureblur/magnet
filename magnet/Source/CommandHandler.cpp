@@ -223,7 +223,8 @@ namespace MG
 			nextArgument = "https://github.com/" + nextArgument;
 		}
 
-		std::string installPath = projectName + "/Dependencies/" + ExtractRepositoryName(nextArgument);
+		std::string name = ExtractRepositoryName(nextArgument);
+		std::string installPath = projectName + "/Dependencies/" + name;
 		std::string command = "git submodule add " + nextArgument + " " + installPath;
 
 		int status = std::system(command.c_str());
@@ -233,15 +234,13 @@ namespace MG
 			return;
 		}
 
-		std::string name = ExtractRepositoryName(nextArgument);
-
 		auto dependencies = Application::GetDependencies();
 		dependencies.push_back(name);
 		WriteDependencyFile(dependencies);
 
 		MG_LOG("Installed new dependency: " + name);
 
-		GenerateDependencyCMakeFiles();
+		HandleGenerateCommand();
 	}
 
 	void CommandHandler::HandlePullListCommand()

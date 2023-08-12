@@ -371,11 +371,6 @@ namespace MG
 		if (!config)
 		{
 			MG_LOG_HOST("Project Wizard", "Failed to create config.yaml file.");
-#if defined(_WIN32)
-			MG_LOG_HOST("Project Wizard", "Error: " + std::string(std::strerror_s(errno)));
-#else
-			MG_LOG_HOST("Project Wizard", "Error: " + std::string(std::strerror(errno)));
-#endif
 			return;
 		}
 

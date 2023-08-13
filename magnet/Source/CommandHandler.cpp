@@ -115,7 +115,7 @@ namespace MG
 			auto dependencies = Application::GetDependencies();
 			for (const auto& package : dependencies)
 			{
-				std::string path = dependenciesPath + "/" + package;
+				std::string path = dependenciesPath.append("/" + package);
 				if (!std::filesystem::exists(path))
 				{
 					hasMissingDependencies = true;

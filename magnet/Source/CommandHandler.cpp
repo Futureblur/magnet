@@ -5,6 +5,25 @@
 #include "Application.h"
 #include "Core.h"
 
+#define MG_REQUIRE_PROJECT_NAME(returnValue) \
+    if (props.projectName.empty()) \
+    { \
+        MG_LOG("Command failed due to unknown project name."); \
+        return returnValue; \
+    }                             \
+    void()
+
+#define MG_EXECUTE_COMMAND(command, errorMessage) \
+{ \
+        int status = std::system(command.c_str()); \
+        if (status != 0) \
+        { \
+            MG_LOG(errorMessage); \
+            return; \
+        } \
+} \
+void()
+
 namespace MG
 {
 	void CommandHandler::HandleNewCommand(const CommandLineArguments* args, int index)
@@ -74,12 +93,7 @@ namespace MG
 			return;
 		}
 
-		std::string projectName = Application::GetProjectName();
-		if (projectName.empty())
-		{
-			MG_LOG("Generate failed due to unknown project name.");
-			return;
-		}
+		MG_REQUIRE_PROJECT_NAME();
 
 		std::string dependenciesPath = projectName + "/Dependencies";
 		bool hasMissingDependencies = false;
@@ -109,13 +123,8 @@ namespace MG
 		std::string generateCommand = "cmake -S . -B " + projectName +
 		                              "/Build -G Xcode -DCMAKE_BUILD_TYPE=Debug";
 
-		int status = std::system(generateCommand.c_str());
-		if (status != 0)
-		{
-			MG_LOG("CMake failed to generate project files. See messages above for more information.");
-
-			return;
-		}
+		MG_EXECUTE_COMMAND(generateCommand,
+		                   "CMake failed to generate project files. See messages above for more information.");
 
 		MG_LOG("Successfully generated project files. Run `magnet build` next.");
 	}
@@ -124,14 +133,7 @@ namespace MG
 	{
 		MG_LOG("Building in debug configuration...");
 
-		std::string projectName = Application::GetProjectName();
-		if (projectName.empty())
-		{
-			MG_LOG("Build failed due to missing ProjectName.txt file.");
-			return;
-		}
-
-		std::string command = "cmake --build " + projectName + "/Build --config Debug";
+		MG_REQUIRE_PROJECT_NAME();
 
 		int status = std::system(command.c_str());
 		if (status != 0)
@@ -140,6 +142,9 @@ namespace MG
 
 			return;
 		}
+		std::string command = "cmake --build " + props.projectName + "/Build --config Debug";
+		MG_EXECUTE_COMMAND(command,
+		                   "CMake couldn't build the project. See messages above for more information. Have you tried generating your project files first? If not, run `magnet generate`.");
 
 		MG_LOG("Build successful. Run `magnet go` to launch your app.");
 	}
@@ -148,33 +153,17 @@ namespace MG
 	{
 		MG_LOG("Launching project...");
 
-		std::string projectName = Application::GetProjectName();
-		if (projectName.empty())
-		{
-			MG_LOG("Launch failed due to unknown project name.");
-			return;
-		}
+		MG_REQUIRE_PROJECT_NAME();
 
-		std::string command = "./" + projectName + "/Binaries/Debug/" + projectName;
-
-		int result = std::system(command.c_str());
-		if (result != 0)
-		{
-			MG_LOG("Failed to launch project. See messages above for more information.");
-			return;
-		}
+		std::string command = "./" + props.projectName + "/Binaries/Debug/" + props.projectName;
+		MG_EXECUTE_COMMAND(command, "Failed to launch project. See messages above for more information.");
 	}
 
 	void CommandHandler::HandleCleanCommand()
 	{
 		MG_LOG("Clean started...");
 
-		std::string projectName = Application::GetProjectName();
-		if (projectName.empty())
-		{
-			MG_LOG("Clean failed due to unknown project name.");
-			return;
-		}
+		MG_REQUIRE_PROJECT_NAME();
 
 		std::array<std::string, 4> removeTargets = {
 				"/Build/cmake_install.cmake",
@@ -207,12 +196,9 @@ namespace MG
 		bool hasNext = index + 1 < args->count;
 		if (!hasNext)
 		{
-			int status = std::system("git submodule update --init --recursive");
-			if (status != 0)
-			{
-				MG_LOG("Failed to install dependencies. See messages above for more information.");
-				return;
-			}
+			std::string command = "git submodule update --init --recursive";
+			MG_EXECUTE_COMMAND(command,
+			                   "Failed to install dependencies. See messages above for more information.");
 
 			MG_LOG("Successfully installed all dependencies.");
 			HandleGenerateCommand();
@@ -250,12 +236,7 @@ namespace MG
 		std::string installPath = projectName + "/Dependencies/" + name;
 		std::string command = "git submodule add " + nextArgument + " " + installPath;
 
-		int status = std::system(command.c_str());
-		if (status != 0)
-		{
-			MG_LOG("Failed to install dependency. See messages above for more information.");
-			return;
-		}
+		MG_EXECUTE_COMMAND(command, "Failed to install dependency. See messages above for more information.");
 
 		auto dependencies = Application::GetDependencies();
 		dependencies.push_back(name);
@@ -291,40 +272,21 @@ namespace MG
 			return;
 		}
 
-		std::string projectName = Application::GetProjectName();
-		if (projectName.empty())
-		{
-			MG_LOG("Remove failed due to unknown project name.");
-			return;
-		}
-
-		std::string nextArgument = args->list[index + 1];
+		MG_REQUIRE_PROJECT_NAME();
 
 		std::string installPath = projectName + "/Dependencies/" + nextArgument;
 		std::string deinitCommand = "git submodule deinit -f " + installPath;
 
-		int status = std::system(deinitCommand.c_str());
-		if (status != 0)
-		{
-			MG_LOG("Failed to remove dependency. See messages above for more information.");
-			return;
-		}
+		MG_EXECUTE_COMMAND(deinitCommand,
+		                   "Failed to remove dependency. See messages above for more information.");
 
 		std::string gitRemoveCommand = "git rm -f " + installPath;
-		status = std::system(gitRemoveCommand.c_str());
-		if (status != 0)
-		{
-			MG_LOG("Failed to remove dependency. See messages above for more information.");
-			return;
-		}
+		MG_EXECUTE_COMMAND(gitRemoveCommand,
+		                   "Failed to remove dependency. See messages above for more information.");
 
 		std::string removeGitModuleCommand = "rm -rf .git/modules/" + installPath;
-		status = std::system(removeGitModuleCommand.c_str());
-		if (status != 0)
-		{
-			MG_LOG("Failed to remove dependency. See messages above for more information.");
-			return;
-		}
+		MG_EXECUTE_COMMAND(removeGitModuleCommand,
+		                   "Failed to remove dependency. See messages above for more information.");
 
 		auto dependencies = Application::GetDependencies();
 		dependencies.erase(std::remove(dependencies.begin(), dependencies.end(), nextArgument),
@@ -393,12 +355,7 @@ namespace MG
 
 	bool CommandHandler::GenerateRootCMakeFile()
 	{
-		std::string projectName = Application::GetProjectName();
-		if (projectName.empty())
-		{
-			MG_LOG("Generate failed due to unknown project name.");
-			return false;
-		}
+		MG_REQUIRE_PROJECT_NAME(false);
 
 		std::ofstream cmakeFile("CMakeLists.txt");
 
@@ -425,12 +382,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC "${PROJECT_SOURCE_DIR}/${PROJE
 
 	bool CommandHandler::GenerateCMakeFiles()
 	{
-		std::string projectName = Application::GetProjectName();
-		if (projectName.empty())
-		{
-			MG_LOG("Generate failed due to unknown project name.");
-			return false;
-		}
+		MG_REQUIRE_PROJECT_NAME(false);
 
 		std::vector<std::string> sourceFiles;
 
@@ -491,12 +443,7 @@ endif ()
 
 	bool CommandHandler::GenerateDependencyCMakeFiles()
 	{
-		std::string projectName = Application::GetProjectName();
-		if (projectName.empty())
-		{
-			MG_LOG("Generate failed due to unknown project name.");
-			return false;
-		}
+		MG_REQUIRE_PROJECT_NAME(false);
 
 		std::ofstream cmakeFile(projectName + "/Dependencies/CMakeLists.txt");
 

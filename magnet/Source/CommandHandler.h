@@ -6,33 +6,40 @@ namespace MG
 {
 	struct CommandLineArguments;
 
+	struct CommandHandlerProps
+	{
+		std::string projectName;
+		std::string nextArgument;
+	};
+
 	// Responsible for handling all of Magnet's command logic.
 	class CommandHandler
 	{
 	public:
-		static void HandleNewCommand(const CommandLineArguments* args, int index);
-		static void HandleGenerateCommand();
-		static void HandleBuildCommand();
-		static void HandleGoCommand();
-		static void HandleCleanCommand();
-		static void HandlePullCommand(const CommandLineArguments* args, int index);
-		static void HandlePullListCommand();
-		static void HandleRemoveCommand(const CommandLineArguments* args, int index);
+		static void HandleHelpCommand(const CommandHandlerProps& props);
+		static void HandleNewCommand(const CommandHandlerProps& props);
+		static void HandleGenerateCommand(const CommandHandlerProps& props);
+		static void HandleBuildCommand(const CommandHandlerProps& props);
+		static void HandleGoCommand(const CommandHandlerProps& props);
+		static void HandleCleanCommand(const CommandHandlerProps& props);
+		static void HandlePullCommand(const CommandHandlerProps& props);
+		static void HandlePullListCommand(const CommandHandlerProps& props);
+		static void HandleRemoveCommand(const CommandHandlerProps& props);
 	private:
 		// Creates a new project by initializing the template folder and
 		// generating a unique config.yaml file inside the .magnet folder.
 		static void CreateNewProject(const std::string& name, const std::string& type);
 
 		// Creates a CMakeLists.txt file at the root of the project.
-		static bool GenerateRootCMakeFile();
+		static bool GenerateRootCMakeFile(const CommandHandlerProps& props);
 
 		// Scans the Source folder for .h / .cpp files and generates a fresh
 		// CMakeLists.txt files based on that.
-		static bool GenerateCMakeFiles();
+		static bool GenerateCMakeFiles(const CommandHandlerProps& props);
 
 		// Generates a CMakeLists.txt file inside of Dependencies folder
 		// based on installed packages.
-		static bool GenerateDependencyCMakeFiles();
+		static bool GenerateDependencyCMakeFiles(const CommandHandlerProps& props);
 
 		// Returns the name of the repository from the given URL.
 		static std::string ExtractRepositoryName(const std::string& url);
@@ -41,5 +48,9 @@ namespace MG
 		// If the path is empty, it will write to the default path.
 		static bool WriteDependencyFile(const std::vector<std::string>& dependencies,
 		                                const std::string& path = "");
+
+		static bool RequireProjectName(const CommandHandlerProps& props);
+
+		static bool ExecuteCommand(const std::string& command, const std::string& errorMessage);
 	};
 }

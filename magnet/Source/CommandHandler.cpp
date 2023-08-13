@@ -96,7 +96,7 @@ namespace MG
 		CreateNewProject(name, projectType);
 	}
 
-	void CommandHandler::HandleGenerateCommand()
+	void CommandHandler::HandleGenerateCommand(const CommandHandlerProps& props)
 	{
 		MG_LOG("Generating project files...");
 
@@ -108,7 +108,7 @@ namespace MG
 
 		MG_REQUIRE_PROJECT_NAME();
 
-		std::string dependenciesPath = projectName + "/Dependencies";
+		std::string dependenciesPath = props.projectName + "/Dependencies";
 		bool hasMissingDependencies = false;
 		if (std::filesystem::exists(dependenciesPath))
 		{
@@ -129,11 +129,11 @@ namespace MG
 			return;
 		}
 
-		GenerateRootCMakeFile();
-		GenerateCMakeFiles();
-		GenerateDependencyCMakeFiles();
+		GenerateRootCMakeFile(props);
+		GenerateCMakeFiles(props);
+		GenerateDependencyCMakeFiles(props);
 
-		std::string generateCommand = "cmake -S . -B " + projectName +
+		std::string generateCommand = "cmake -S . -B " + props.projectName +
 		                              "/Build -G Xcode -DCMAKE_BUILD_TYPE=Debug";
 
 		MG_EXECUTE_COMMAND(generateCommand,
@@ -142,7 +142,7 @@ namespace MG
 		MG_LOG("Successfully generated project files. Run `magnet build` next.");
 	}
 
-	void CommandHandler::HandleBuildCommand()
+	void CommandHandler::HandleBuildCommand(const CommandHandlerProps& props)
 	{
 		MG_LOG("Building in debug configuration...");
 
@@ -155,7 +155,7 @@ namespace MG
 		MG_LOG("Build successful. Run `magnet go` to launch your app.");
 	}
 
-	void CommandHandler::HandleGoCommand()
+	void CommandHandler::HandleGoCommand(const CommandHandlerProps& props)
 	{
 		MG_LOG("Launching project...");
 
@@ -165,7 +165,7 @@ namespace MG
 		MG_EXECUTE_COMMAND(command, "Failed to launch project. See messages above for more information.");
 	}
 
-	void CommandHandler::HandleCleanCommand()
+	void CommandHandler::HandleCleanCommand(const CommandHandlerProps& props)
 	{
 		MG_LOG("Clean started...");
 
@@ -181,7 +181,7 @@ namespace MG
 		int removedItems = 0;
 		for (const auto& target : removeTargets)
 		{
-			std::string path = projectName + target;
+			std::string path = props.projectName + target;
 			removedItems += (int) std::filesystem::remove_all(path);
 		}
 
@@ -197,49 +197,42 @@ namespace MG
 		MG_LOG(message.str());
 	}
 
-	void CommandHandler::HandlePullCommand(const CommandLineArguments* args, int index)
+	void CommandHandler::HandlePullCommand(const CommandHandlerProps& props)
 	{
-		bool hasNext = index + 1 < args->count;
-		if (!hasNext)
+		if (props.nextArgument.empty())
 		{
 			std::string command = "git submodule update --init --recursive";
 			MG_EXECUTE_COMMAND(command,
 			                   "Failed to install dependencies. See messages above for more information.");
 
 			MG_LOG("Successfully installed all dependencies.");
-			HandleGenerateCommand();
-			return;
-		}
-
-		std::string projectName = Application::GetProjectName();
-		if (projectName.empty())
-		{
-			MG_LOG("Install failed due to unknown project name.");
+			HandleGenerateCommand(props);
 			return;
 		}
 
 		MG_REQUIRE_PROJECT_NAME();
 
-		if (nextArgument == "--list")
+		if (props.nextArgument == "--list")
 		{
-			HandlePullListCommand();
+			HandlePullListCommand(props);
 			return;
 		}
 
-		if (nextArgument == "--help")
+		if (props.nextArgument == "--help")
 		{
 			MG_LOGNH("Usage: magnet pull <url>");
 			MG_LOGNH("       magnet pull --list");
 			return;
 		}
 
+		std::string nextArgument = props.nextArgument;
 		if (nextArgument.find("https://") != 0)
 		{
 			nextArgument = "https://github.com/" + nextArgument;
 		}
 
 		std::string name = ExtractRepositoryName(nextArgument);
-		std::string installPath = projectName + "/Dependencies/" + name;
+		std::string installPath = props.projectName + "/Dependencies/" + name;
 		std::string command = "git submodule add " + nextArgument + " " + installPath;
 
 		MG_EXECUTE_COMMAND(command, "Failed to install dependency. See messages above for more information.");
@@ -250,10 +243,10 @@ namespace MG
 
 		MG_LOG("Installed new dependency: " + name);
 
-		HandleGenerateCommand();
+		HandleGenerateCommand(props);
 	}
 
-	void CommandHandler::HandlePullListCommand()
+	void CommandHandler::HandlePullListCommand([[maybe_unused]] const CommandHandlerProps& props)
 	{
 		auto dependencies = Application::GetDependencies();
 
@@ -269,10 +262,9 @@ namespace MG
 			MG_LOGNH(package);
 	}
 
-	void CommandHandler::HandleRemoveCommand(const CommandLineArguments* args, int index)
+	void CommandHandler::HandleRemoveCommand(const CommandHandlerProps& props)
 	{
-		bool hasNext = index + 1 < args->count;
-		if (!hasNext)
+		if (props.nextArgument.empty())
 		{
 			MG_LOG("Usage: magnet remove <dependency>");
 			return;
@@ -280,7 +272,7 @@ namespace MG
 
 		MG_REQUIRE_PROJECT_NAME();
 
-		std::string installPath = projectName + "/Dependencies/" + nextArgument;
+		std::string installPath = props.projectName + "/Dependencies/" + props.nextArgument;
 		std::string deinitCommand = "git submodule deinit -f " + installPath;
 
 		MG_EXECUTE_COMMAND(deinitCommand,
@@ -295,13 +287,13 @@ namespace MG
 		                   "Failed to remove dependency. See messages above for more information.");
 
 		auto dependencies = Application::GetDependencies();
-		dependencies.erase(std::remove(dependencies.begin(), dependencies.end(), nextArgument),
+		dependencies.erase(std::remove(dependencies.begin(), dependencies.end(), props.nextArgument),
 		                   dependencies.end());
 		WriteDependencyFile(dependencies);
 
-		MG_LOG("Removed dependency: " + nextArgument);
+		MG_LOG("Removed dependency: " + props.nextArgument);
 
-		HandleGenerateCommand();
+		HandleGenerateCommand(props);
 	}
 
 	void CommandHandler::CreateNewProject(const std::string& name, const std::string& type)
@@ -359,7 +351,7 @@ namespace MG
 		                              " && magnet generate` to generate project files.");
 	}
 
-	bool CommandHandler::GenerateRootCMakeFile()
+	bool CommandHandler::GenerateRootCMakeFile(const CommandHandlerProps& props)
 	{
 		MG_REQUIRE_PROJECT_NAME(false);
 
@@ -367,7 +359,7 @@ namespace MG
 
 		cmakeFile << "# Generated by Magnet v" << MG_VERSION << "\n\n";
 		cmakeFile << "cmake_minimum_required(VERSION 3.16)\n";
-		cmakeFile << "project(" << projectName << ")\n";
+		cmakeFile << "project(" << props.projectName << ")\n";
 		cmakeFile << "set(CMAKE_CXX_STANDARD 17)\n";
 
 		cmakeFile << R"""(
@@ -386,13 +378,13 @@ target_include_directories(${PROJECT_NAME} PUBLIC "${PROJECT_SOURCE_DIR}/${PROJE
 		return true;
 	}
 
-	bool CommandHandler::GenerateCMakeFiles()
+	bool CommandHandler::GenerateCMakeFiles(const CommandHandlerProps& props)
 	{
 		MG_REQUIRE_PROJECT_NAME(false);
 
 		std::vector<std::string> sourceFiles;
 
-		std::string sourceFilesPath = projectName + "/Source";
+		std::string sourceFilesPath = props.projectName + "/Source";
 		for (auto& path : std::filesystem::recursive_directory_iterator(sourceFilesPath))
 		{
 			if (path.path().extension() == ".cpp" || path.path().extension() == ".h" ||
@@ -402,11 +394,11 @@ target_include_directories(${PROJECT_NAME} PUBLIC "${PROJECT_SOURCE_DIR}/${PROJE
 			}
 		}
 
-		std::ofstream cmakeFile(projectName + "/Source/CMakeLists.txt");
+		std::ofstream cmakeFile(props.projectName + "/Source/CMakeLists.txt");
 
 		cmakeFile << "# Generated by Magnet v" << MG_VERSION << "\n\n";
 		cmakeFile << "cmake_minimum_required(VERSION 3.16)\n";
-		cmakeFile << "project(" << projectName << ")\n";
+		cmakeFile << "project(" << props.projectName << ")\n";
 		cmakeFile << "set(CMAKE_CXX_STANDARD 17)\n";
 		cmakeFile << "add_executable(${PROJECT_NAME}";
 
@@ -443,19 +435,18 @@ endif ()
 		}
 
 		cmakeFile.close();
-
 		return true;
 	}
 
-	bool CommandHandler::GenerateDependencyCMakeFiles()
+	bool CommandHandler::GenerateDependencyCMakeFiles(const CommandHandlerProps& props)
 	{
 		MG_REQUIRE_PROJECT_NAME(false);
 
-		std::ofstream cmakeFile(projectName + "/Dependencies/CMakeLists.txt");
+		std::ofstream cmakeFile(props.projectName + "/Dependencies/CMakeLists.txt");
 
 		cmakeFile << "# Generated by Magnet v" << MG_VERSION << "\n\n";
 		cmakeFile << "cmake_minimum_required(VERSION 3.16)\n";
-		cmakeFile << "project(" << projectName << ")\n";
+		cmakeFile << "project(" << props.projectName << ")\n";
 
 		auto dependencies = Application::GetDependencies();
 		if (!dependencies.empty())
@@ -465,11 +456,11 @@ endif ()
 				cmakeFile << "add_subdirectory(" << package << ")\n";
 			}
 
-			cmakeFile << "target_include_directories(" << projectName << " PUBLIC\n";
+			cmakeFile << "target_include_directories(" << props.projectName << " PUBLIC\n";
 
 			for (const auto& package : dependencies)
 			{
-				std::string includePath = projectName + "/Dependencies/" + package + "/include";
+				std::string includePath = props.projectName + "/Dependencies/" + package + "/include";
 				if (!std::filesystem::exists(includePath))
 					continue;
 

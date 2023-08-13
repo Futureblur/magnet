@@ -26,7 +26,7 @@ void()
 
 namespace MG
 {
-	void CommandHandler::HandleNewCommand(const CommandLineArguments* args, int index)
+	void CommandHandler::HandleHelpCommand([[maybe_unused]] const CommandHandlerProps& props)
 	{
 		bool hasNext = index + 1 < args->count;
 		bool hasNextButOne = index + 2 < args->count;
@@ -40,6 +40,19 @@ namespace MG
 		{
 			std::string name;
 			std::string projectType = "Application";
+		MG_LOG("Usage: magnet <command> [options]\n");
+		MG_LOGNH("Commands:");
+		MG_LOGNH("  help                 Shows this message.");
+		MG_LOGNH("  new                  Creates a new C++ project.");
+		MG_LOGNH("  generate             Generates project files.");
+		MG_LOGNH("  build                Builds the project.");
+		MG_LOGNH("  go                   Launches the project.");
+		MG_LOGNH("  clean                Cleans the project.");
+		MG_LOGNH("  pull <url>           Installs a new dependency.");
+		MG_LOGNH("  pull --list          Lists all installed dependencies.");
+		MG_LOGNH("  pull --help          Shows more information.");
+		MG_LOGNH("  remove <dependency>  Removes a dependency.");
+	}
 
 			MG_LOG_HOST("Project Wizard", "What would you like to name your new C++ project?");
 			Application::PrintPrompt();

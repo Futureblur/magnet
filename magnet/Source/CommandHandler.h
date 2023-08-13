@@ -48,5 +48,9 @@ namespace MG
 		// If the path is empty, it will write to the default path.
 		static bool WriteDependencyFile(const std::vector<std::string>& dependencies,
 		                                const std::string& path = "");
+
+		static bool RequireProjectName(const CommandHandlerProps& props);
+
+		static bool ExecuteCommand(const std::string& command, const std::string& errorMessage);
 	};
 }

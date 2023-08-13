@@ -54,23 +54,16 @@ namespace MG
 				m_Commands.at(argument)(props);
 				continue;
 			}
-			else if (argument == "pull")
+
+			if (argument == "magnet" && !hasNext)
 			{
-				CommandHandler::HandlePullCommand(&m_Arguments, i);
+				MG_LOG("No argument provided. Try `magnet help` for more information.");
+				continue;
 			}
-			else if (argument == "remove")
-			{
-				CommandHandler::HandleRemoveCommand(&m_Arguments, i);
-			}
-			else if (argument == "run")
-			{
-				MG_LOG("Invalid command `" + argument +
-				       "`. Did you mean `magnet go` to run your app? If not, try `magnet help` for more information.");
-			}
-			else
-			{
-				if (argument == "magnet")
-					continue;
+
+			bool hasPrevious = i - 1 >= 0;
+			if (!hasPrevious)
+				continue;
 
 				if (i == 0)
 				{
@@ -84,8 +77,7 @@ namespace MG
 				    previousArgument == "remove")
 					continue;
 
-				MG_LOG("Invalid command `" + argument + "`. Try `magnet help` for more information.");
-			}
+			MG_LOG("Invalid command `" + argument + "`. Try `magnet help` for more information.");
 		}
 	}
 

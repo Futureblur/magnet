@@ -7,6 +7,18 @@
 
 namespace MG
 {
+	// Map commands to Handler functions.
+	static const std::unordered_map<std::string, void (*)(const CommandHandlerProps&)> m_Commands = {
+			{"help",     CommandHandler::HandleHelpCommand},
+			{"new",      CommandHandler::HandleNewCommand},
+			{"generate", CommandHandler::HandleGenerateCommand},
+			{"build",    CommandHandler::HandleBuildCommand},
+			{"go",       CommandHandler::HandleGoCommand},
+			{"clean",    CommandHandler::HandleCleanCommand},
+			{"pull",     CommandHandler::HandlePullCommand},
+			{"remove",   CommandHandler::HandleRemoveCommand}
+	};
+
 	void Application::Init(const CommandLineArguments& args)
 	{
 		m_Arguments = args;
@@ -28,25 +40,19 @@ namespace MG
 		{
 			std::string argument = m_Arguments.list[i];
 
-			if (argument == "new")
+			std::string projectName = Application::GetProjectName();
+			bool hasNext = i + 1 < m_Arguments.count;
+			std::string nextArgument = hasNext ? m_Arguments.list[i + 1] : "";
+
+			CommandHandlerProps props;
+			props.projectName = projectName;
+			props.nextArgument = nextArgument;
+
+			bool commandExists = m_Commands.find(argument) != m_Commands.end();
+			if (commandExists)
 			{
-				CommandHandler::HandleNewCommand(&m_Arguments, i);
-			}
-			else if (argument == "generate")
-			{
-				CommandHandler::HandleGenerateCommand();
-			}
-			else if (argument == "build")
-			{
-				CommandHandler::HandleBuildCommand();
-			}
-			else if (argument == "go")
-			{
-				CommandHandler::HandleGoCommand();
-			}
-			else if (argument == "clean")
-			{
-				CommandHandler::HandleCleanCommand();
+				m_Commands.at(argument)(props);
+				continue;
 			}
 			else if (argument == "pull")
 			{

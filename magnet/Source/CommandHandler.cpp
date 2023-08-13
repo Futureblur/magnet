@@ -15,7 +15,7 @@
 
 #define MG_EXECUTE_COMMAND(command, errorMessage) \
 { \
-        int status = std::system(command.c_str()); \
+        int status = std::system((command).c_str()); \
         if (status != 0) \
         { \
             MG_LOG(errorMessage); \

@@ -36,6 +36,9 @@ namespace MG
 				std::cout << "- StaticLibrary\n";
 				std::cout << "- SharedLibrary\n";
 				Application::PrintPrompt();
+			MG_LOGNH("  1. Application (default)");
+			MG_LOGNH("  2. StaticLibrary");
+			MG_LOGNH("  3. SharedLibrary");
 
 				std::string input;
 				std::getline(std::cin, input);
@@ -233,8 +236,8 @@ namespace MG
 
 		if (nextArgument == "--help")
 		{
-			MG_LOG("Usage: magnet pull <url>");
-			MG_LOG("       magnet pull --list");
+			MG_LOGNH("Usage: magnet pull <url>");
+			MG_LOGNH("       magnet pull --list");
 			return;
 		}
 
@@ -276,7 +279,7 @@ namespace MG
 		MG_LOG("Here are all the installed dependencies:");
 
 		for (auto& package : dependencies)
-			std::cout << package << "\n";
+			MG_LOGNH(package);
 	}
 
 	void CommandHandler::HandleRemoveCommand(const CommandLineArguments* args, int index)

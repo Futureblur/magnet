@@ -7,6 +7,18 @@
 
 namespace MG
 {
+	// Map commands to Handler functions.
+	static const std::unordered_map<std::string, void (*)(const CommandHandlerProps&)> m_Commands = {
+			{"help",     CommandHandler::HandleHelpCommand},
+			{"new",      CommandHandler::HandleNewCommand},
+			{"generate", CommandHandler::HandleGenerateCommand},
+			{"build",    CommandHandler::HandleBuildCommand},
+			{"go",       CommandHandler::HandleGoCommand},
+			{"clean",    CommandHandler::HandleCleanCommand},
+			{"pull",     CommandHandler::HandlePullCommand},
+			{"remove",   CommandHandler::HandleRemoveCommand}
+	};
+
 	void Application::Init(const CommandLineArguments& args)
 	{
 		m_Arguments = args;
@@ -14,6 +26,15 @@ namespace MG
 
 	void Application::Print(const std::string& host, const std::string& message)
 	{
+		if (message.empty())
+			return;
+
+		if (host.empty())
+		{
+			std::cout << message << "\n";
+			return;
+		}
+
 		std::cout << "[🧲 " << host << "] " << message << "\n";
 	}
 
@@ -28,58 +49,36 @@ namespace MG
 		{
 			std::string argument = m_Arguments.list[i];
 
-			if (argument == "new")
-			{
-				CommandHandler::HandleNewCommand(&m_Arguments, i);
-			}
-			else if (argument == "generate")
-			{
-				CommandHandler::HandleGenerateCommand();
-			}
-			else if (argument == "build")
-			{
-				CommandHandler::HandleBuildCommand();
-			}
-			else if (argument == "go")
-			{
-				CommandHandler::HandleGoCommand();
-			}
-			else if (argument == "clean")
-			{
-				CommandHandler::HandleCleanCommand();
-			}
-			else if (argument == "pull")
-			{
-				CommandHandler::HandlePullCommand(&m_Arguments, i);
-			}
-			else if (argument == "remove")
-			{
-				CommandHandler::HandleRemoveCommand(&m_Arguments, i);
-			}
-			else if (argument == "run")
-			{
-				MG_LOG("Invalid command `" + argument +
-				       "`. Did you mean `magnet go` to run your app? If not, try `magnet help` for more information.");
-			}
-			else
-			{
-				if (argument == "magnet")
-					continue;
+			std::string projectName = Application::GetProjectName();
+			bool hasNext = i + 1 < m_Arguments.count;
+			std::string nextArgument = hasNext ? m_Arguments.list[i + 1] : "";
 
-				if (i == 0)
-				{
-					MG_LOG("No argument provided. Try `magnet help` for more information.");
+			CommandHandlerProps props;
+			props.projectName = projectName;
+			props.nextArgument = nextArgument;
 
-					continue;
-				}
-
-				std::string previousArgument = m_Arguments.list[i - 1];
-				if (previousArgument == "new" || previousArgument == "pull" || previousArgument == "--list" ||
-				    previousArgument == "remove")
-					continue;
-
-				MG_LOG("Invalid command `" + argument + "`. Try `magnet help` for more information.");
+			bool commandExists = m_Commands.find(argument) != m_Commands.end();
+			if (commandExists)
+			{
+				m_Commands.at(argument)(props);
+				continue;
 			}
+
+			if (argument == "magnet" && !hasNext)
+			{
+				MG_LOG("No argument provided. Try `magnet help` for more information.");
+				continue;
+			}
+
+			bool hasPrevious = i - 1 >= 0;
+			if (!hasPrevious)
+				continue;
+
+			std::string previousArgument = m_Arguments.list[i - 1];
+			if (previousArgument == "pull" || previousArgument == "--list" || previousArgument == "remove")
+				continue;
+
+			MG_LOG("Invalid command `" + argument + "`. Try `magnet help` for more information.");
 		}
 	}
 

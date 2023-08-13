@@ -26,6 +26,15 @@ namespace MG
 
 	void Application::Print(const std::string& host, const std::string& message)
 	{
+		if (message.empty())
+			return;
+
+		if (host.empty())
+		{
+			std::cout << message << "\n";
+			return;
+		}
+
 		std::cout << "[🧲 " << host << "] " << message << "\n";
 	}
 

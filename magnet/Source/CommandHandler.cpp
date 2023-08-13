@@ -28,18 +28,6 @@ namespace MG
 {
 	void CommandHandler::HandleHelpCommand([[maybe_unused]] const CommandHandlerProps& props)
 	{
-		bool hasNext = index + 1 < args->count;
-		bool hasNextButOne = index + 2 < args->count;
-		if (hasNext && hasNextButOne)
-		{
-			std::string nextArgument = args->list[index + 1];
-			std::string nextButOneArgument = args->list[index + 2];
-			CreateNewProject(nextArgument, nextButOneArgument);
-		}
-		else
-		{
-			std::string name;
-			std::string projectType = "Application";
 		MG_LOG("Usage: magnet <command> [options]\n");
 		MG_LOGNH("Commands:");
 		MG_LOGNH("  help                 Shows this message.");
@@ -54,46 +42,58 @@ namespace MG
 		MG_LOGNH("  remove <dependency>  Removes a dependency.");
 	}
 
-			MG_LOG_HOST("Project Wizard", "What would you like to name your new C++ project?");
-			Application::PrintPrompt();
-			std::cin >> name;
+	void CommandHandler::HandleNewCommand([[maybe_unused]] const CommandHandlerProps& props)
+	{
+		std::string name;
+		std::string projectType = "Application";
 
-			std::cin.clear();
-			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		MG_LOG_HOST("Project Wizard", "What would you like to name your new C++ project?");
+		Application::PrintPrompt();
+		std::cin >> name;
 
-			do
-			{
-				MG_LOG_HOST("Project Wizard", "Choose a project type:");
-				std::cout << "- Application (default)\n";
-				std::cout << "- StaticLibrary\n";
-				std::cout << "- SharedLibrary\n";
-				Application::PrintPrompt();
+		std::cin.clear();
+		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+		do
+		{
+			MG_LOG_HOST("Project Wizard", "Choose a project type:");
 			MG_LOGNH("  1. Application (default)");
 			MG_LOGNH("  2. StaticLibrary");
 			MG_LOGNH("  3. SharedLibrary");
+			Application::PrintPrompt();
 
-				std::string input;
-				std::getline(std::cin, input);
+			std::string input;
+			std::getline(std::cin, input);
 
-				if (!input.empty())
+			if (!input.empty())
+			{
+				std::istringstream stream(input);
+				std::string chosenType;
+				stream >> chosenType;
+
+				switch (std::stoi(chosenType))
 				{
-					std::istringstream stream(input);
-					stream >> projectType;
-
-					if (projectType == "Application" || projectType == "StaticLibrary" ||
-					    projectType == "SharedLibrary")
-					{
+					case 1:
+						projectType = "Application";
 						break;
-					}
-
-					MG_LOG_HOST("Project Wizard", "Invalid answer.");
+					case 2:
+						projectType = "StaticLibrary";
+						break;
+					case 3:
+						projectType = "SharedLibrary";
+						break;
+					default:
+						MG_LOG_HOST("Project Wizard", "Invalid answer.");
+						continue;
 				}
-				else
-					break;
-			} while (true);
 
-			CreateNewProject(name, projectType);
-		}
+				MG_LOG_HOST("Project Wizard", "Invalid answer.");
+			}
+			else
+				break;
+		} while (true);
+
+		CreateNewProject(name, projectType);
 	}
 
 	void CommandHandler::HandleGenerateCommand()
@@ -148,13 +148,6 @@ namespace MG
 
 		MG_REQUIRE_PROJECT_NAME();
 
-		int status = std::system(command.c_str());
-		if (status != 0)
-		{
-			MG_LOG("CMake couldn't build the project. See messages above for more information. Have you tried generating your project files first? If not, run `magnet generate`.");
-
-			return;
-		}
 		std::string command = "cmake --build " + props.projectName + "/Build --config Debug";
 		MG_EXECUTE_COMMAND(command,
 		                   "CMake couldn't build the project. See messages above for more information. Have you tried generating your project files first? If not, run `magnet generate`.");
@@ -225,7 +218,7 @@ namespace MG
 			return;
 		}
 
-		std::string nextArgument = args->list[index + 1];
+		MG_REQUIRE_PROJECT_NAME();
 
 		if (nextArgument == "--list")
 		{

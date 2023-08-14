@@ -56,6 +56,12 @@ namespace MG
 			bool hasNext = i + 1 < m_Arguments.count;
 			std::string nextArgument = hasNext ? m_Arguments.list[i + 1] : "";
 
+			if (argument == "magnet" && !hasNext)
+			{
+				MG_LOG("No argument provided. Try `magnet help` for more information.");
+				continue;
+			}
+
 			CommandHandlerProps props;
 			props.projectName = projectName;
 			props.projectType = projectType;

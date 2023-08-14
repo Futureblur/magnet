@@ -279,6 +279,11 @@ namespace MG
 		HandleGenerateCommand(props);
 	}
 
+	bool CommandHandler::IsCommandGlobal(const std::string& command)
+	{
+		return command == "new" || command == "help";
+	}
+
 	void CommandHandler::CreateNewProject(const std::string& name, const std::string& type)
 	{
 		MG_LOG_HOST("Project Wizard", "Creating new C++ project...");

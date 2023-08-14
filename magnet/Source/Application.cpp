@@ -65,6 +65,12 @@ namespace MG
 			bool commandExists = m_Commands.find(argument) != m_Commands.end();
 			if (commandExists)
 			{
+				if (!props.IsValid() && !CommandHandler::IsCommandGlobal(argument))
+				{
+					MG_LOG("It seems like there is no project in this folder, or the current configuration is corrupted. Try `magnet help` for more information.");
+					break;
+				}
+				
 				m_Commands.at(argument)(props);
 				continue;
 			}

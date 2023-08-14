@@ -48,19 +48,15 @@ namespace MG
 
 			if (!input.empty())
 			{
-				std::istringstream stream(input);
-				std::string chosenType;
-				stream >> chosenType;
-
-				switch (std::stoi(chosenType))
+				switch (input[0])
 				{
-					case 1:
+					case '1':
 						projectType = "Application";
 						break;
-					case 2:
+					case '2':
 						projectType = "StaticLibrary";
 						break;
-					case 3:
+					case '3':
 						projectType = "SharedLibrary";
 						break;
 					default:
@@ -68,7 +64,7 @@ namespace MG
 						continue;
 				}
 
-				MG_LOG_HOST("Project Wizard", "Invalid answer.");
+				break;
 			}
 			else
 				break;
@@ -389,7 +385,13 @@ target_include_directories(${PROJECT_NAME} PUBLIC "${PROJECT_SOURCE_DIR}/${PROJE
 		cmakeFile << "cmake_minimum_required(VERSION 3.16)\n";
 		cmakeFile << "project(" << props.projectName << ")\n";
 		cmakeFile << "set(CMAKE_CXX_STANDARD 17)\n";
-		cmakeFile << "add_executable(${PROJECT_NAME}";
+
+		if (Application::GetProjectType() == "StaticLibrary")
+			cmakeFile << "add_library(${PROJECT_NAME} STATIC";
+		else if (Application::GetProjectType() == "SharedLibrary")
+			cmakeFile << "add_library(${PROJECT_NAME} SHARED";
+		else
+			cmakeFile << "add_executable(${PROJECT_NAME}";
 
 		for (const auto& sourceFile : sourceFiles)
 		{

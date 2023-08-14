@@ -75,12 +75,6 @@ namespace MG
 				continue;
 			}
 
-			if (argument == "magnet" && !hasNext)
-			{
-				MG_LOG("No argument provided. Try `magnet help` for more information.");
-				continue;
-			}
-
 			bool hasPrevious = i - 1 >= 0;
 			if (!hasPrevious)
 				continue;
@@ -104,8 +98,10 @@ namespace MG
 			return "";
 
 		YAML::Node config = YAML::LoadFile(".magnet/config.yaml");
-		if (config["name"])
-			return config["name"].as<std::string>();
+
+		auto nameNode = config["name"];
+		if (nameNode)
+			return nameNode.as<std::string>();
 
 		return "";
 	}
@@ -116,8 +112,10 @@ namespace MG
 			return "";
 
 		YAML::Node config = YAML::LoadFile(".magnet/config.yaml");
-		if (config["projectType"])
-			return config["projectType"].as<std::string>();
+
+		auto projectTypeNode = config["projectType"];
+		if (projectTypeNode)
+			return projectTypeNode.as<std::string>();
 
 		return "";
 	}

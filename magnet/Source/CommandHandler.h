@@ -9,7 +9,15 @@ namespace MG
 	struct CommandHandlerProps
 	{
 		std::string projectName;
+		std::string projectType;
+		int cppVersion;
+
 		std::string nextArgument;
+
+		bool IsValid() const
+		{
+			return !projectName.empty() && !projectType.empty() && cppVersion != -1;
+		}
 	};
 
 	// Responsible for handling all of Magnet's command logic.

@@ -12,6 +12,7 @@ namespace MG
 		MG_LOG("Usage: magnet <command> [options]\n");
 		MG_LOGNH("Commands:");
 		MG_LOGNH("  help                 Shows this message.");
+		MG_LOGNH("  version              Shows the current version of Magnet.");
 		MG_LOGNH("  new                  Creates a new C++ project.");
 		MG_LOGNH("  generate             Generates project files.");
 		MG_LOGNH("  build                Builds the project.");
@@ -21,6 +22,11 @@ namespace MG
 		MG_LOGNH("  pull --list          Lists all installed dependencies.");
 		MG_LOGNH("  pull --help          Shows more information.");
 		MG_LOGNH("  remove <dependency>  Removes a dependency.");
+	}
+
+	void CommandHandler::HandleVersionCommand([[maybe_unused]] const CommandHandlerProps& props)
+	{
+		MG_LOG("Magnet v" + std::string(MG_VERSION));
 	}
 
 	void CommandHandler::HandleNewCommand([[maybe_unused]] const CommandHandlerProps& props)
@@ -290,7 +296,7 @@ namespace MG
 
 	bool CommandHandler::IsCommandGlobal(const std::string& command)
 	{
-		return command == "new" || command == "help";
+		return command == "new" || command == "help" || command == "version";
 	}
 
 	void CommandHandler::CreateNewProject(const std::string& name, const std::string& type)

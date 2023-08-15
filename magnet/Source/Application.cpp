@@ -10,6 +10,7 @@ namespace MG
 	// Map commands to Handler functions.
 	static const std::unordered_map<std::string, void (*)(const CommandHandlerProps&)> m_Commands = {
 			{"help",     CommandHandler::HandleHelpCommand},
+			{"version",  CommandHandler::HandleVersionCommand},
 			{"new",      CommandHandler::HandleNewCommand},
 			{"generate", CommandHandler::HandleGenerateCommand},
 			{"build",    CommandHandler::HandleBuildCommand},
@@ -76,7 +77,7 @@ namespace MG
 					MG_LOG("It seems like there is no project in this folder, or the current configuration is corrupted. Try `magnet help` for more information.");
 					break;
 				}
-				
+
 				m_Commands.at(argument)(props);
 				continue;
 			}

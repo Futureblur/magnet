@@ -25,6 +25,7 @@ namespace MG
 	{
 	public:
 		static void HandleHelpCommand(const CommandHandlerProps& props);
+		static void HandleVersionCommand(const CommandHandlerProps& props);
 		static void HandleNewCommand(const CommandHandlerProps& props);
 		static void HandleGenerateCommand(const CommandHandlerProps& props);
 		static void HandleBuildCommand(const CommandHandlerProps& props);

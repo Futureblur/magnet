@@ -114,8 +114,9 @@ namespace MG
 		std::string generateCommand = "cmake -S . -B " + props.projectName +
 		                              "/Build -G Xcode -DCMAKE_BUILD_TYPE=Debug";
 
-		ExecuteCommand(generateCommand,
-		               "CMake failed to generate project files. See messages above for more information.");
+		if (!ExecuteCommand(generateCommand,
+		                    "CMake failed to generate project files. See messages above for more information."))
+			return;
 
 		MG_LOG("Successfully generated project files. Run `magnet build` next.");
 	}
@@ -128,8 +129,9 @@ namespace MG
 			return;
 
 		std::string command = "cmake --build " + props.projectName + "/Build --config Debug";
-		ExecuteCommand(command,
-		               "CMake couldn't build the project. See messages above for more information. Have you tried generating your project files first? If not, run `magnet generate`.");
+		if (!ExecuteCommand(command,
+		                    "CMake couldn't build the project. See messages above for more information. Have you tried generating your project files first? If not, run `magnet generate`."))
+			return;
 
 		MG_LOG("Build successful. Run `magnet go` to launch your app.");
 	}
@@ -142,7 +144,8 @@ namespace MG
 			return;
 
 		std::string command = "./" + props.projectName + "/Binaries/Debug/" + props.projectName;
-		ExecuteCommand(command, "Failed to launch project. See messages above for more information.");
+		if (!ExecuteCommand(command, "Failed to launch project. See messages above for more information."))
+			return;
 	}
 
 	void CommandHandler::HandleCleanCommand(const CommandHandlerProps& props)
@@ -183,8 +186,9 @@ namespace MG
 		if (props.nextArgument.empty())
 		{
 			std::string command = "git submodule update --init --recursive";
-			ExecuteCommand(command,
-			               "Failed to install dependencies. See messages above for more information.");
+			if (!ExecuteCommand(command,
+			                    "Failed to install dependencies. See messages above for more information."))
+				return;
 
 			MG_LOG("Successfully installed all dependencies.");
 			HandleGenerateCommand(props);
@@ -217,7 +221,9 @@ namespace MG
 		std::string installPath = props.projectName + "/Dependencies/" + name;
 		std::string command = "git submodule add " + nextArgument + " " + installPath;
 
-		ExecuteCommand(command, "Failed to install dependency. See messages above for more information.");
+		if (!ExecuteCommand(command,
+		                    "Failed to install dependency. See messages above for more information."))
+			return;
 
 		auto dependencies = Application::GetDependencies();
 		dependencies.push_back(name);
@@ -258,16 +264,19 @@ namespace MG
 		std::string installPath = props.projectName + "/Dependencies/" + props.nextArgument;
 		std::string deinitCommand = "git submodule deinit -f " + installPath;
 
-		ExecuteCommand(deinitCommand,
-		               "Failed to remove dependency. See messages above for more information.");
+		if (!ExecuteCommand(deinitCommand,
+		                    "Failed to remove dependency. See messages above for more information."))
+			return;
 
 		std::string gitRemoveCommand = "git rm -f " + installPath;
-		ExecuteCommand(gitRemoveCommand,
-		               "Failed to remove dependency. See messages above for more information.");
+		if (!ExecuteCommand(gitRemoveCommand,
+		                    "Failed to remove dependency. See messages above for more information."))
+			return;
 
 		std::string removeGitModuleCommand = "rm -rf .git/modules/" + installPath;
-		ExecuteCommand(removeGitModuleCommand,
-		               "Failed to remove dependency. See messages above for more information.");
+		if (!ExecuteCommand(removeGitModuleCommand,
+		                    "Failed to remove dependency. See messages above for more information."))
+			return;
 
 		auto dependencies = Application::GetDependencies();
 		dependencies.erase(std::remove(dependencies.begin(), dependencies.end(), props.nextArgument),

@@ -9,7 +9,15 @@ namespace MG
 	struct CommandHandlerProps
 	{
 		std::string projectName;
+		std::string projectType;
+		int cppVersion;
+
 		std::string nextArgument;
+
+		bool IsValid() const
+		{
+			return !projectName.empty() && !projectType.empty() && cppVersion != -1;
+		}
 	};
 
 	// Responsible for handling all of Magnet's command logic.
@@ -25,6 +33,10 @@ namespace MG
 		static void HandlePullCommand(const CommandHandlerProps& props);
 		static void HandlePullListCommand(const CommandHandlerProps& props);
 		static void HandleRemoveCommand(const CommandHandlerProps& props);
+
+		// Returns whether the given command is global, meaning it doesn't
+		// require a project to be present.
+		static bool IsCommandGlobal(const std::string& command);
 	private:
 		// Creates a new project by initializing the template folder and
 		// generating a unique config.yaml file inside the .magnet folder.

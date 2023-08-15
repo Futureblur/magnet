@@ -50,23 +50,34 @@ namespace MG
 			std::string argument = m_Arguments.list[i];
 
 			std::string projectName = Application::GetProjectName();
+			std::string projectType = Application::GetProjectType();
+			int cppVersion = Application::GetCppVersion();
+
 			bool hasNext = i + 1 < m_Arguments.count;
 			std::string nextArgument = hasNext ? m_Arguments.list[i + 1] : "";
 
+			if (argument == "magnet" && !hasNext)
+			{
+				MG_LOG("No argument provided. Try `magnet help` for more information.");
+				continue;
+			}
+
 			CommandHandlerProps props;
 			props.projectName = projectName;
+			props.projectType = projectType;
+			props.cppVersion = cppVersion;
 			props.nextArgument = nextArgument;
 
 			bool commandExists = m_Commands.find(argument) != m_Commands.end();
 			if (commandExists)
 			{
+				if (!props.IsValid() && !CommandHandler::IsCommandGlobal(argument))
+				{
+					MG_LOG("It seems like there is no project in this folder, or the current configuration is corrupted. Try `magnet help` for more information.");
+					break;
+				}
+				
 				m_Commands.at(argument)(props);
-				continue;
-			}
-
-			if (argument == "magnet" && !hasNext)
-			{
-				MG_LOG("No argument provided. Try `magnet help` for more information.");
 				continue;
 			}
 
@@ -93,8 +104,10 @@ namespace MG
 			return "";
 
 		YAML::Node config = YAML::LoadFile(".magnet/config.yaml");
-		if (config["name"])
-			return config["name"].as<std::string>();
+
+		auto nameNode = config["name"];
+		if (nameNode)
+			return nameNode.as<std::string>();
 
 		return "";
 	}
@@ -105,10 +118,26 @@ namespace MG
 			return "";
 
 		YAML::Node config = YAML::LoadFile(".magnet/config.yaml");
-		if (config["projectType"])
-			return config["projectType"].as<std::string>();
+
+		auto projectTypeNode = config["projectType"];
+		if (projectTypeNode)
+			return projectTypeNode.as<std::string>();
 
 		return "";
+	}
+
+	int Application::GetCppVersion()
+	{
+		if (!IsRootLevel())
+			return -1;
+
+		YAML::Node config = YAML::LoadFile(".magnet/config.yaml");
+
+		auto cppDialectNode = config["cppDialect"];
+		if (cppDialectNode)
+			return cppDialectNode.as<int>();
+
+		return 0;
 	}
 
 	std::vector<std::string> Application::GetDependencies()

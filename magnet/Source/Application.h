@@ -1,7 +1,5 @@
 #pragma once
 
-#include <iostream>
-
 namespace MG
 {
 	struct CommandLineArguments

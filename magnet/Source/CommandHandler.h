@@ -20,7 +20,7 @@ namespace MG
 			return nextArguments[index];
 		}
 
-		[[nodiscard]] bool HasArguments() const
+		[[maybe_unused]] [[nodiscard]] bool HasArguments() const
 		{
 			return !nextArguments.empty();
 		}

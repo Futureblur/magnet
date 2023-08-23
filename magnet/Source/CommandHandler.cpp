@@ -5,6 +5,8 @@
 #include "Application.h"
 #include "Core.h"
 
+#include <regex>
+
 namespace MG
 {
 	void CommandHandler::HandleHelpCommand([[maybe_unused]] const CommandHandlerProps& props)
@@ -343,9 +345,29 @@ namespace MG
 
 		std::filesystem::rename(name + "/MAGNET_NEW_PROJECT", name + "/" + name);
 
-		std::filesystem::remove(name + "/Template_CMakeLists.txt");
-		std::filesystem::remove(name + "/" + name + "/Source/Template_CMakeLists.txt");
-		std::filesystem::remove(name + "/" + name + "/Dependencies/Template_CMakeLists.txt");
+		// Read .gitignore file and replace MAGNET_NEW_PROJECT with project name
+		std::ifstream gitignore(name + "/.gitignore");
+		std::string gitignoreContent((std::istreambuf_iterator<char>(gitignore)),
+		                             std::istreambuf_iterator<char>());
+		gitignore.close();
+
+		std::ofstream newGitignore(name + "/.gitignore");
+		std::string newGitignoreContent = std::regex_replace(gitignoreContent,
+		                                                     std::regex("MAGNET_NEW_PROJECT"), name);
+		newGitignore << newGitignoreContent;
+		newGitignore.close();
+
+		// Read README.md file and replace MAGNET_NEW_PROJECT with project name
+		std::ifstream readme(name + "/README.md");
+		std::string readmeContent((std::istreambuf_iterator<char>(readme)),
+		                          std::istreambuf_iterator<char>());
+		readme.close();
+
+		std::ofstream newReadme(name + "/README.md");
+		std::string newReadmeContent = std::regex_replace(readmeContent,
+		                                                  std::regex("MAGNET_NEW_PROJECT"), name);
+		newReadme << newReadmeContent;
+		newReadme.close();
 
 		YAML::Emitter out;
 

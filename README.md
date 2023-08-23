@@ -3,6 +3,8 @@
 - 🧲 Magnet is a minimalistic dependency manager for your next C++ project.
 - 🏗 Currently, it is not production ready and thus should be used carefully.️
 
+<br>
+
 # Features
 
 | Feature                                                                                      | Ready?          |
@@ -22,6 +24,8 @@
 | Linux support (Unix Makefiles generator)                                                     | ❌               |
 | Windows support (Visual Studio generator)                                                    | ❌               |
 
+<br>
+
 # 🛠️ Installation
 
 macOS ONLY (other platforms will be supported very soon™️):
@@ -30,6 +34,8 @@ macOS ONLY (other platforms will be supported very soon™️):
 2. Generate Xcode project files: `cd magnet/scripts && chmod +x ./Xcode.sh && ./Xcode.sh`
 4. Open `magnet/Build/magnet.xcodeproj` and build `magnet` target: **⌘ + B**
 5. Create `magnet` symlink: `chmod +x ./macOSInstall.sh && ./macOSInstall.sh`
+
+<br>
 
 # 🏛️ History
 
@@ -45,6 +51,8 @@ In fact, you’ll never have time to learn every new tool that probably isn’t 
 something that can be set up in minutes.
 
 And here’s where Magnet comes into play.
+
+<br>
 
 # 💡 The Idea
 

@@ -94,16 +94,17 @@ namespace MG
 		if (!RequireProjectName(props))
 			return;
 
-		std::string dependenciesPath = props.projectName + "/Dependencies";
+		const std::filesystem::path dependenciesPath = props.projectName + "/Dependencies";
 		bool hasMissingDependencies = false;
 		if (std::filesystem::exists(dependenciesPath))
 		{
 			auto dependencies = Application::GetDependencies();
 			for (const auto& package : dependencies)
 			{
-				std::string path = dependenciesPath.append("/" + package);
+				std::string path = dependenciesPath / package;
 				if (!std::filesystem::exists(path))
 				{
+					MG_LOG("Missing dependency: " + path);
 					hasMissingDependencies = true;
 				}
 			}

@@ -13,17 +13,18 @@ namespace MG
 	{
 		MG_LOG("Usage: magnet <command> [options]\n");
 		MG_LOGNH("Commands:");
-		MG_LOGNH("  help                 Shows this message.");
-		MG_LOGNH("  version              Shows the current version of Magnet.");
-		MG_LOGNH("  new                  Creates a new C++ project.");
-		MG_LOGNH("  generate             Generates project files.");
-		MG_LOGNH("  build                Builds the project.");
-		MG_LOGNH("  go                   Launches the project.");
-		MG_LOGNH("  clean                Cleans the project.");
-		MG_LOGNH("  pull <url>           Installs a new dependency.");
-		MG_LOGNH("  pull --list          Lists all installed dependencies.");
-		MG_LOGNH("  pull --help          Shows more information.");
-		MG_LOGNH("  remove <dependency>  Removes a dependency.");
+		MG_LOGNH("  help                         Shows this message.");
+		MG_LOGNH("  version                      Shows the current version of Magnet.");
+		MG_LOGNH("  new                          Creates a new C++ project.");
+		MG_LOGNH("  generate                     Generates project files.");
+		MG_LOGNH("  build                        Builds the project.");
+		MG_LOGNH("  go                           Launches the project.");
+		MG_LOGNH("  clean                        Cleans the project.");
+		MG_LOGNH("  pull <url>                   Installs a new dependency.");
+		MG_LOGNH("  pull --list                  Lists all installed dependencies.");
+		MG_LOGNH("  pull --help                  Shows more information.");
+		MG_LOGNH("  remove <dependency>          Removes a dependency.");
+		MG_LOGNH("  switch <dependency> <branch> Switches a dependency branch.");
 	}
 
 	void CommandHandler::HandleVersionCommand([[maybe_unused]] const CommandHandlerProps& props)

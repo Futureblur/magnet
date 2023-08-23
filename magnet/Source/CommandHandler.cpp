@@ -289,7 +289,38 @@ namespace MG
 		                   dependencies.end());
 		WriteDependencyFile(dependencies);
 
-		MG_LOG("Removed dependency: " + props.nextArgument);
+		MG_LOG("Removed dependency: " + dependency);
+
+		HandleGenerateCommand(props);
+	}
+
+	void CommandHandler::HandleSwitchCommand(const CommandHandlerProps& props)
+	{
+		std::string dependency = props.GetArgument(0);
+		std::string branch = props.GetArgument(1);
+
+		if (dependency.empty() || branch.empty())
+		{
+			MG_LOG("Usage: magnet switch <dependency> <branch>");
+			return;
+		}
+
+		if (!RequireProjectName(props))
+			return;
+
+		std::filesystem::path installPath = std::filesystem::path(props.projectName) / "Dependencies" /
+		                                    dependency;
+		std::string command = "git -C " + installPath.string() + " checkout " + branch;
+		if (!ExecuteCommand(command,
+		                    "Failed to switch dependency branch. See messages above for more information."))
+			return;
+
+		std::string gitAddCommand = "git add " + installPath.string();
+		if (!ExecuteCommand(gitAddCommand,
+		                    "Failed to switch dependency branch. See messages above for more information."))
+			return;
+
+		MG_LOG("Switched " + dependency + " branch to: " + branch);
 
 		HandleGenerateCommand(props);
 	}

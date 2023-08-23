@@ -17,7 +17,8 @@ namespace MG
 			{"go",       CommandHandler::HandleGoCommand},
 			{"clean",    CommandHandler::HandleCleanCommand},
 			{"pull",     CommandHandler::HandlePullCommand},
-			{"remove",   CommandHandler::HandleRemoveCommand}
+			{"remove",   CommandHandler::HandleRemoveCommand},
+			{"switch",   CommandHandler::HandleSwitchCommand},
 	};
 
 	void Application::Init(const CommandLineArguments& args)

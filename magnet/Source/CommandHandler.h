@@ -12,12 +12,28 @@ namespace MG
 		std::string projectType;
 		int cppVersion;
 
-		std::string nextArgument;
+		std::string GetArgument(uint32_t index) const
+		{
+			if (index >= nextArguments.size())
+				return "";
 
-		bool IsValid() const
+			return nextArguments[index];
+		}
+
+		[[nodiscard]] bool HasArguments() const
+		{
+			return !nextArguments.empty();
+		}
+
+		[[nodiscard]] bool IsValid() const
 		{
 			return !projectName.empty() && !projectType.empty() && cppVersion != -1;
 		}
+
+	private:
+		std::vector<std::string> nextArguments;
+
+		friend class Application;
 	};
 
 	// Responsible for handling all of Magnet's command logic.
@@ -34,6 +50,7 @@ namespace MG
 		static void HandlePullCommand(const CommandHandlerProps& props);
 		static void HandlePullListCommand(const CommandHandlerProps& props);
 		static void HandleRemoveCommand(const CommandHandlerProps& props);
+		static void HandleSwitchCommand(const CommandHandlerProps& props);
 
 		// Returns whether the given command is global, meaning it doesn't
 		// require a project to be present.

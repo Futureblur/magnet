@@ -528,11 +528,16 @@ endif ()
 
 			for (const auto& package : dependencies)
 			{
-				std::string includePath = props.projectName + "/Dependencies/" + package + "/include";
+				std::string includePath = props.projectName + "/Dependencies/" + package;
 				if (!std::filesystem::exists(includePath))
 					continue;
 
-				cmakeFile << "      \"" << package << "/include" << "\"\n";
+				cmakeFile << "      \"" << package;
+
+				if (std::filesystem::exists(includePath + "/include"))
+					cmakeFile << "/include";
+
+				cmakeFile << "\"\n";
 			}
 
 			cmakeFile << ")\n";

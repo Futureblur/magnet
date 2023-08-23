@@ -47,8 +47,16 @@ namespace MG
 
 	void Application::Run()
 	{
+		uint32_t skipCounter = 0;
+
 		for (int i = 0; i < m_Arguments.count; i++)
 		{
+			if (skipCounter > 0)
+			{
+				skipCounter--;
+				continue;
+			}
+
 			std::string argument = m_Arguments.list[i];
 
 			std::string projectName = Application::GetProjectName();
@@ -56,19 +64,30 @@ namespace MG
 			int cppVersion = Application::GetCppVersion();
 
 			bool hasNext = i + 1 < m_Arguments.count;
-			std::string nextArgument = hasNext ? m_Arguments.list[i + 1] : "";
 
-			if (argument == "magnet" && !hasNext)
+			// Capture all arguments after the current one in a vector.
+			std::vector<std::string> nextArguments;
+			if (hasNext)
 			{
-				MG_LOG("No argument provided. Try `magnet help` for more information.");
+				for (int j = i + 1; j < m_Arguments.count; j++)
+					nextArguments.emplace_back(m_Arguments.list[j]);
+			}
+
+			if (argument == "magnet")
+			{
+				if (!hasNext)
+					MG_LOG("No argument provided. Try `magnet help` for more information.");
+
 				continue;
 			}
+
+			skipCounter = (int) nextArguments.size();
 
 			CommandHandlerProps props;
 			props.projectName = projectName;
 			props.projectType = projectType;
 			props.cppVersion = cppVersion;
-			props.nextArgument = nextArgument;
+			props.nextArguments = nextArguments;
 
 			bool commandExists = m_Commands.find(argument) != m_Commands.end();
 			if (commandExists)
@@ -82,14 +101,6 @@ namespace MG
 				m_Commands.at(argument)(props);
 				continue;
 			}
-
-			bool hasPrevious = i - 1 >= 0;
-			if (!hasPrevious)
-				continue;
-
-			std::string previousArgument = m_Arguments.list[i - 1];
-			if (previousArgument == "pull" || previousArgument == "--list" || previousArgument == "remove")
-				continue;
 
 			MG_LOG("Invalid command `" + argument + "`. Try `magnet help` for more information.");
 		}

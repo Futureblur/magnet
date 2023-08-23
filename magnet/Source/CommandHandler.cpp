@@ -189,7 +189,8 @@ namespace MG
 
 	void CommandHandler::HandlePullCommand(const CommandHandlerProps& props)
 	{
-		if (props.nextArgument.empty())
+		std::string nextArgument = props.GetArgument(0);
+		if (nextArgument.empty())
 		{
 			std::string command = "git submodule update --init --recursive";
 			if (!ExecuteCommand(command,
@@ -204,20 +205,20 @@ namespace MG
 		if (!RequireProjectName(props))
 			return;
 
-		if (props.nextArgument == "--list")
+		if (nextArgument == "--list")
 		{
 			HandlePullListCommand(props);
 			return;
 		}
 
-		if (props.nextArgument == "--help")
+		if (nextArgument == "--help")
 		{
 			MG_LOGNH("Usage: magnet pull <url>");
 			MG_LOGNH("       magnet pull --list");
 			return;
 		}
 
-		std::string nextArgument = props.nextArgument;
+		// If the user didn't provide a full URL, we'll assume it's a GitHub repository.
 		if (nextArgument.find("https://") != 0)
 		{
 			nextArgument = "https://github.com/" + nextArgument;
@@ -258,7 +259,8 @@ namespace MG
 
 	void CommandHandler::HandleRemoveCommand(const CommandHandlerProps& props)
 	{
-		if (props.nextArgument.empty())
+		std::string dependency = props.GetArgument(0);
+		if (dependency.empty())
 		{
 			MG_LOG("Usage: magnet remove <dependency>");
 			return;
@@ -267,7 +269,7 @@ namespace MG
 		if (!RequireProjectName(props))
 			return;
 
-		std::string installPath = props.projectName + "/Dependencies/" + props.nextArgument;
+		std::string installPath = props.projectName + "/Dependencies/" + dependency;
 		std::string deinitCommand = "git submodule deinit -f " + installPath;
 
 		if (!ExecuteCommand(deinitCommand,
@@ -285,7 +287,7 @@ namespace MG
 			return;
 
 		auto dependencies = Application::GetDependencies();
-		dependencies.erase(std::remove(dependencies.begin(), dependencies.end(), props.nextArgument),
+		dependencies.erase(std::remove(dependencies.begin(), dependencies.end(), dependency),
 		                   dependencies.end());
 		WriteDependencyFile(dependencies);
 

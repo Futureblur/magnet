@@ -12,7 +12,7 @@ namespace MG
 		std::string projectType;
 		int cppVersion;
 
-		std::string GetArgument(uint32_t index) const
+		[[nodiscard]] std::string GetArgument(uint32_t index) const
 		{
 			if (index >= nextArguments.size())
 				return "";

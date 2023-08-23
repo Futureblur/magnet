@@ -122,7 +122,16 @@ namespace MG
 		GenerateDependencyCMakeFiles(props);
 
 		std::string generateCommand = "cmake -S . -B " + props.projectName +
-		                              "/Build -G Xcode -DCMAKE_BUILD_TYPE=Debug";
+		                              "/Build ";
+
+#if _WIN32
+		generateCommand += "-G \"Visual Studio 16 2019\"";
+#elif __APPLE__
+		generateCommand += "-G Xcode";
+#elif __linux__
+		generateCommand += "-G \"Unix Makefiles\"";
+#endif
+
 
 		if (!ExecuteCommand(generateCommand,
 		                    "CMake failed to generate project files. See messages above for more information."))

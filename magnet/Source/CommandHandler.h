@@ -11,6 +11,7 @@ namespace MG
 		std::string projectName;
 		std::string projectType;
 		int cppVersion;
+		std::string configuration;
 
 		[[nodiscard]] std::string GetArgument(uint32_t index) const
 		{

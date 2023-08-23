@@ -62,6 +62,7 @@ namespace MG
 			std::string projectName = Application::GetProjectName();
 			std::string projectType = Application::GetProjectType();
 			int cppVersion = Application::GetCppVersion();
+			std::string configuration = Application::GetDefaultConfiguration();
 
 			bool hasNext = i + 1 < m_Arguments.count;
 
@@ -87,6 +88,7 @@ namespace MG
 			props.projectName = projectName;
 			props.projectType = projectType;
 			props.cppVersion = cppVersion;
+			props.configuration = configuration;
 			props.nextArguments = nextArguments;
 
 			bool commandExists = m_Commands.find(argument) != m_Commands.end();
@@ -151,6 +153,20 @@ namespace MG
 			return cppDialectNode.as<int>();
 
 		return 0;
+	}
+
+	std::string Application::GetDefaultConfiguration()
+	{
+		if (!IsRootLevel())
+			return "";
+
+		YAML::Node config = YAML::LoadFile(".magnet/config.yaml");
+
+		auto defaultConfigurationNode = config["defaultConfiguration"];
+		if (defaultConfigurationNode)
+			return defaultConfigurationNode.as<std::string>();
+
+		return "";
 	}
 
 	std::vector<std::string> Application::GetDependencies()

@@ -26,6 +26,7 @@ namespace MG
 		static std::string GetProjectName();
 		static std::string GetProjectType();
 		static int GetCppVersion();
+		static std::string GetDefaultConfiguration();
 		static std::vector<std::string> GetDependencies();
 		static bool IsRootLevel();
 

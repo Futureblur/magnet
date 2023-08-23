@@ -133,12 +133,13 @@ namespace MG
 
 	void CommandHandler::HandleBuildCommand(const CommandHandlerProps& props)
 	{
-		MG_LOG("Building in debug configuration...");
+		MG_LOG("Building in " + props.configuration + " configuration...");
 
 		if (!RequireProjectName(props))
 			return;
 
-		std::string command = "cmake --build " + props.projectName + "/Build --config Debug";
+		std::string command = "cmake --build " + props.projectName + "/Build --config " +
+		                      props.configuration;
 		if (!ExecuteCommand(command,
 		                    "CMake couldn't build the project. See messages above for more information. Have you tried generating your project files first? If not, run `magnet generate`."))
 			return;
@@ -153,7 +154,8 @@ namespace MG
 		if (!RequireProjectName(props))
 			return;
 
-		std::string command = "./" + props.projectName + "/Binaries/Debug/" + props.projectName;
+		std::string command = "./" + props.projectName + "/Binaries/" + props.configuration + "/" +
+		                      props.projectName;
 		if (!ExecuteCommand(command, "Failed to launch project. See messages above for more information."))
 			return;
 	}

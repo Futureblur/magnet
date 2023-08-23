@@ -1,6 +1,6 @@
 ![Magnet](assets/banner.png)
 
-- 🧲 Magnet is a minimalistic dependency manager for your next C++ project.
+- 🧲 Magnet is a minimalist dependency manager for your next C++ project.
 - 🏗 Currently, it is not production ready and thus should be used carefully.️
 
 <br>

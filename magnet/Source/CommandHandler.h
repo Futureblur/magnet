@@ -1,5 +1,8 @@
 #pragma once
 
+// Creates the function declaration for a given command.
+#define MG_DEFINE_COMMAND(name) static void Handle##name##Command(const CommandHandlerProps& props)
+
 namespace MG
 {
 	class Project;
@@ -27,17 +30,18 @@ namespace MG
 	class CommandHandler
 	{
 	public:
-		static void HandleHelpCommand(const CommandHandlerProps& props);
-		static void HandleVersionCommand(const CommandHandlerProps& props);
-		static void HandleNewCommand(const CommandHandlerProps& props);
-		static void HandleGenerateCommand(const CommandHandlerProps& props);
-		static void HandleBuildCommand(const CommandHandlerProps& props);
-		static void HandleGoCommand(const CommandHandlerProps& props);
-		static void HandleCleanCommand(const CommandHandlerProps& props);
-		static void HandlePullCommand(const CommandHandlerProps& props);
-		static void HandlePullListCommand(const CommandHandlerProps& props);
-		static void HandleRemoveCommand(const CommandHandlerProps& props);
-		static void HandleSwitchCommand(const CommandHandlerProps& props);
+		MG_DEFINE_COMMAND(Help);
+		MG_DEFINE_COMMAND(Version);
+		MG_DEFINE_COMMAND(Config);
+		MG_DEFINE_COMMAND(New);
+		MG_DEFINE_COMMAND(Generate);
+		MG_DEFINE_COMMAND(Build);
+		MG_DEFINE_COMMAND(Go);
+		MG_DEFINE_COMMAND(Clean);
+		MG_DEFINE_COMMAND(Pull);
+		MG_DEFINE_COMMAND(PullList);
+		MG_DEFINE_COMMAND(Remove);
+		MG_DEFINE_COMMAND(Switch);
 
 		// Returns whether the given command is global, meaning it doesn't
 		// require a project to be present.

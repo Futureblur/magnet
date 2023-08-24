@@ -51,9 +51,9 @@ namespace MG
 		do
 		{
 			MG_LOG_HOST("Project Wizard", "Choose a project type:");
-			MG_LOGNH("  1. Application (default)");
+			MG_LOGNH("  1. Executable (default)");
 			MG_LOGNH("  2. StaticLibrary");
-			MG_LOGNH("  3. SharedLibrary");
+			MG_LOGNH("  3. DynamicLibrary");
 			Application::PrintPrompt();
 
 			std::string input;
@@ -396,10 +396,8 @@ namespace MG
 		out << YAML::Key << "name";
 		out << YAML::Value << name;
 		out << YAML::Key << "projectType";
-		out << YAML::Value << type;
-		out << YAML::Key << "cppDialect";
-		out << YAML::Value << "20";
 		out << YAML::Value << project.GetTypeString();
+		out << YAML::Key << "cppVersion";
 		out << YAML::Value << project.GetCppVersion();
 		out << YAML::Key << "cmakeVersion";
 		out << YAML::Value << "3.16";

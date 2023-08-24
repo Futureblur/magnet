@@ -413,7 +413,7 @@ namespace MG
 		out << YAML::Key << "cppVersion";
 		out << YAML::Value << project.GetCppVersion();
 		out << YAML::Key << "cmakeVersion";
-		out << YAML::Value << "3.16";
+		out << YAML::Value << project.GetCmakeVersion();
 		out << YAML::Key << "defaultConfiguration";
 		out << YAML::Value << project.GetConfiguration().ToString();
 		out << YAML::EndMap;

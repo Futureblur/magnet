@@ -1,0 +1,22 @@
+name: Docker Build
+
+on:
+  push:
+    branches: [ "dev" ]
+  pull_request:
+    branches: [ "dev" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Build and test in Docker
+        run: |
+          docker build -t magnet .
+          docker run -it magnet
+
+

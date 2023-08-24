@@ -15,7 +15,7 @@ namespace MG
 		Project* project;
 
 		// Returns the argument by index.
-		[[nodiscard]] std::string GetArgument(uint32_t index) const;
+		[[maybe_unused]] [[nodiscard]] std::string GetArgument(uint32_t index) const;
 
 		// Returns whether there are any arguments left.
 		[[maybe_unused]] [[nodiscard]] bool HasArguments() const;

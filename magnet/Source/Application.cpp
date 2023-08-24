@@ -171,7 +171,7 @@ namespace MG
 		return "";
 	}
 
-	void Application::SetCmakeVersion(const std::string& version)
+	[[maybe_unused]] void Application::SetCmakeVersion(const std::string& version)
 	{
 		if (!IsRootLevel())
 			return;

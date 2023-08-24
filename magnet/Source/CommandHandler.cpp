@@ -29,11 +29,13 @@ namespace MG
 		MG_LOGNH("Commands:");
 		MG_LOGNH("  help                         Shows this message.");
 		MG_LOGNH("  version                      Shows the current version of Magnet.");
+		MG_LOGNH("  config <configuration>       Changes the default configuration.");
 		MG_LOGNH("  new                          Creates a new C++ project.");
 		MG_LOGNH("  generate                     Generates project files.");
 		MG_LOGNH("  build                        Builds the project.");
 		MG_LOGNH("  go                           Launches the project.");
 		MG_LOGNH("  clean                        Cleans the project.");
+		MG_LOGNH("  pull                         Installs all dependencies.");
 		MG_LOGNH("  pull <url>                   Installs a new dependency.");
 		MG_LOGNH("  pull --list                  Lists all installed dependencies.");
 		MG_LOGNH("  pull --help                  Shows more information.");

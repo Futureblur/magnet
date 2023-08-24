@@ -599,12 +599,13 @@ namespace MG
 
 				emitter.Add_Indentation();
 
-				//TODO: Do we need to add quotation marks around the include?
+				emitter.Add_Literal("\"");
 				emitter.Add_Literal(package);
 
 				if (std::filesystem::exists(packagePath / "include"))
 					emitter.Add_Literal("/include");
 
+				emitter.Add_Literal("\"");
 				emitter.Add_Newline();
 			}
 

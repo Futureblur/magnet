@@ -4,6 +4,7 @@
 
 #include "CommandHandler.h"
 #include "Core.h"
+#include "Project.h"
 
 namespace MG
 {
@@ -59,11 +60,6 @@ namespace MG
 
 			std::string argument = m_Arguments.list[i];
 
-			std::string projectName = Application::GetProjectName();
-			std::string projectType = Application::GetProjectType();
-			int cppVersion = Application::GetCppVersion();
-			std::string configuration = Application::GetDefaultConfiguration();
-
 			bool hasNext = i + 1 < m_Arguments.count;
 
 			// Capture all arguments after the current one in a vector.
@@ -85,16 +81,21 @@ namespace MG
 			skipCounter = (int) nextArguments.size();
 
 			CommandHandlerProps props;
-			props.projectName = projectName;
-			props.projectType = projectType;
-			props.cppVersion = cppVersion;
-			props.configuration = configuration;
+
+			Project project;
+			project.SetName(Application::GetProjectName());
+			project.SetType(Application::GetProjectType());
+			project.SetCppVersion(Application::GetCppVersion());
+			project.SetCmakeVersion(Application::GetCmakeVersion());
+			project.SetConfiguration(Configuration::FromString(Application::GetDefaultConfiguration()));
+
+			props.project = &project;
 			props.nextArguments = nextArguments;
 
 			bool commandExists = m_Commands.find(argument) != m_Commands.end();
 			if (commandExists)
 			{
-				if (!props.IsValid() && !CommandHandler::IsCommandGlobal(argument))
+				if (!props.project->IsValid() && !CommandHandler::IsCommandGlobal(argument))
 				{
 					MG_LOG("It seems like there is no project in this folder, or the current configuration is corrupted. Try `magnet help` for more information.");
 					break;
@@ -167,6 +168,19 @@ namespace MG
 			return defaultConfigurationNode.as<std::string>();
 
 		return "";
+	}
+
+	void Application::SetDefaultConfiguration(const Configuration& configuration)
+	{
+		if (!IsRootLevel())
+			return;
+
+		YAML::Node config = YAML::LoadFile(".magnet/config.yaml");
+		config["defaultConfiguration"] = configuration.ToString();
+
+		std::ofstream file(".magnet/config.yaml");
+		file << config;
+		file.close();
 	}
 
 	std::vector<std::string> Application::GetDependencies()

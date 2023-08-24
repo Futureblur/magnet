@@ -2,32 +2,20 @@
 
 namespace MG
 {
+	class Project;
+
 	struct CommandLineArguments;
 
+	// Represents the properties of a command.
 	struct CommandHandlerProps
 	{
-		std::string projectName;
-		std::string projectType;
-		int cppVersion;
-		std::string configuration;
+		Project* project;
 
-		[[nodiscard]] std::string GetArgument(uint32_t index) const
-		{
-			if (index >= nextArguments.size())
-				return "";
+		// Returns the argument by index.
+		[[nodiscard]] std::string GetArgument(uint32_t index) const;
 
-			return nextArguments[index];
-		}
-
-		[[maybe_unused]] [[nodiscard]] bool HasArguments() const
-		{
-			return !nextArguments.empty();
-		}
-
-		[[nodiscard]] bool IsValid() const
-		{
-			return !projectName.empty() && !projectType.empty() && cppVersion != -1;
-		}
+		// Returns whether there are any arguments left.
+		[[maybe_unused]] [[nodiscard]] bool HasArguments() const;
 
 	private:
 		std::vector<std::string> nextArguments;
@@ -57,7 +45,7 @@ namespace MG
 	private:
 		// Creates a new project by initializing the template folder and
 		// generating a unique config.yaml file inside the .magnet folder.
-		static void CreateNewProject(const std::string& name, const std::string& type);
+		static void CreateNewProject(const Project& project);
 
 		// Creates a CMakeLists.txt file at the root of the project.
 		static bool GenerateRootCMakeFile(const CommandHandlerProps& props);

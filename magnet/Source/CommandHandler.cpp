@@ -4,6 +4,7 @@
 
 #include "Application.h"
 #include "Core.h"
+#include "Project.h"
 
 #include <regex>
 
@@ -34,12 +35,15 @@ namespace MG
 
 	void CommandHandler::HandleNewCommand([[maybe_unused]] const CommandHandlerProps& props)
 	{
+		Project project = Project::GetDefault();
+
 		std::string name;
-		std::string projectType = "Application";
 
 		MG_LOG_HOST("Project Wizard", "What would you like to name your new C++ project?");
 		Application::PrintPrompt();
 		std::cin >> name;
+
+		project.SetName(name);
 
 		std::cin.clear();
 		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -60,13 +64,13 @@ namespace MG
 				switch (input[0])
 				{
 					case '1':
-						projectType = "Application";
+						project.SetType(ProjectType::Executable);
 						break;
 					case '2':
-						projectType = "StaticLibrary";
+						project.SetType(ProjectType::StaticLibrary);
 						break;
 					case '3':
-						projectType = "SharedLibrary";
+						project.SetType(ProjectType::DynamicLibrary);
 						break;
 					default:
 						MG_LOG_HOST("Project Wizard", "Invalid answer.");
@@ -79,7 +83,7 @@ namespace MG
 				break;
 		} while (true);
 
-		CreateNewProject(name, projectType);
+		CreateNewProject(project);
 	}
 
 	void CommandHandler::HandleGenerateCommand(const CommandHandlerProps& props)
@@ -95,7 +99,9 @@ namespace MG
 		if (!RequireProjectName(props))
 			return;
 
-		const std::filesystem::path dependenciesPath = props.projectName + "/Dependencies";
+		std::string projectName = props.project->GetName();
+
+		const std::filesystem::path dependenciesPath = projectName + "/Dependencies";
 		bool hasMissingDependencies = false;
 		if (std::filesystem::exists(dependenciesPath))
 		{
@@ -121,8 +127,7 @@ namespace MG
 		GenerateCMakeFiles(props);
 		GenerateDependencyCMakeFiles(props);
 
-		std::string generateCommand = "cmake -S . -B " + props.projectName +
-		                              "/Build ";
+		std::string generateCommand = "cmake -S . -B " + projectName + "/Build ";
 
 #if _WIN32
 		generateCommand += "-G \"Visual Studio 16 2019\"";
@@ -131,7 +136,6 @@ namespace MG
 #elif __linux__
 		generateCommand += "-G \"Unix Makefiles\"";
 #endif
-
 
 		if (!ExecuteCommand(generateCommand,
 		                    "CMake failed to generate project files. See messages above for more information."))
@@ -142,13 +146,14 @@ namespace MG
 
 	void CommandHandler::HandleBuildCommand(const CommandHandlerProps& props)
 	{
-		MG_LOG("Building in " + props.configuration + " configuration...");
+		std::string configuration = props.project->GetConfiguration().ToString();
+		MG_LOG("Building in " + configuration + " configuration...");
 
 		if (!RequireProjectName(props))
 			return;
 
-		std::string command = "cmake --build " + props.projectName + "/Build --config " +
-		                      props.configuration;
+		std::string command = "cmake --build " + props.project->GetName() + "/Build --config " +
+		                      configuration;
 		if (!ExecuteCommand(command,
 		                    "CMake couldn't build the project. See messages above for more information. Have you tried generating your project files first? If not, run `magnet generate`."))
 			return;
@@ -163,8 +168,9 @@ namespace MG
 		if (!RequireProjectName(props))
 			return;
 
-		std::string command = "./" + props.projectName + "/Binaries/" + props.configuration + "/" +
-		                      props.projectName;
+		std::string projectName = props.project->GetName();
+		std::string configuration = props.project->GetConfiguration().ToString();
+		std::string command = "./" + projectName + "/Binaries/" + configuration + "/" + projectName;
 		if (!ExecuteCommand(command, "Failed to launch project. See messages above for more information."))
 			return;
 	}
@@ -186,7 +192,7 @@ namespace MG
 		int removedItems = 0;
 		for (const auto& target : removeTargets)
 		{
-			std::string path = props.projectName + target;
+			std::string path = props.project->GetName() + target;
 			removedItems += (int) std::filesystem::remove_all(path);
 		}
 
@@ -240,7 +246,7 @@ namespace MG
 		}
 
 		std::string name = ExtractRepositoryName(nextArgument);
-		std::string installPath = props.projectName + "/Dependencies/" + name;
+		std::string installPath = props.project->GetName() + "/Dependencies/" + name;
 		std::string command = "git submodule add " + nextArgument + " " + installPath;
 
 		if (!ExecuteCommand(command,
@@ -284,7 +290,7 @@ namespace MG
 		if (!RequireProjectName(props))
 			return;
 
-		std::string installPath = props.projectName + "/Dependencies/" + dependency;
+		std::string installPath = props.project->GetName() + "/Dependencies/" + dependency;
 		std::string deinitCommand = "git submodule deinit -f " + installPath;
 
 		if (!ExecuteCommand(deinitCommand,
@@ -325,7 +331,7 @@ namespace MG
 		if (!RequireProjectName(props))
 			return;
 
-		std::filesystem::path installPath = std::filesystem::path(props.projectName) / "Dependencies" /
+		std::filesystem::path installPath = std::filesystem::path(props.project->GetName()) / "Dependencies" /
 		                                    dependency;
 		std::string command = "git -C " + installPath.string() + " checkout " + branch;
 		if (!ExecuteCommand(command,
@@ -347,9 +353,11 @@ namespace MG
 		return command == "new" || command == "help" || command == "version";
 	}
 
-	void CommandHandler::CreateNewProject(const std::string& name, const std::string& type)
+	void CommandHandler::CreateNewProject(const Project& project)
 	{
 		MG_LOG_HOST("Project Wizard", "Creating new C++ project...");
+
+		const std::string& name = project.GetName();
 
 		std::string templatePath = "magnet/magnet/Templates/MAGNET_NEW_PROJECT";
 		std::string newPath = Application::GetCurrentWorkingDirectory() + "/" + name;
@@ -391,10 +399,12 @@ namespace MG
 		out << YAML::Value << type;
 		out << YAML::Key << "cppDialect";
 		out << YAML::Value << "20";
+		out << YAML::Value << project.GetTypeString();
+		out << YAML::Value << project.GetCppVersion();
 		out << YAML::Key << "cmakeVersion";
 		out << YAML::Value << "3.16";
 		out << YAML::Key << "defaultConfiguration";
-		out << YAML::Value << "Debug";
+		out << YAML::Value << project.GetConfiguration().ToString();
 		out << YAML::EndMap;
 
 		// Create config.yaml file in .magnet folder which does not exist yet
@@ -455,9 +465,10 @@ target_include_directories(${PROJECT_NAME} PUBLIC "${PROJECT_SOURCE_DIR}/${PROJE
 		if (!RequireProjectName(props))
 			return false;
 
+		std::string projectName = props.project->GetName();
 		std::vector<std::string> sourceFiles;
 
-		std::string sourceFilesPath = props.projectName + "/Source";
+		std::string sourceFilesPath = projectName + "/Source";
 		for (auto& path : std::filesystem::recursive_directory_iterator(sourceFilesPath))
 		{
 			if (path.path().extension() == ".cpp" || path.path().extension() == ".h" ||
@@ -522,7 +533,9 @@ endif ()
 		if (!RequireProjectName(props))
 			return false;
 
-		std::ofstream cmakeFile(props.projectName + "/Dependencies/CMakeLists.txt");
+		std::string projectName = props.project->GetName();
+
+		CmakeEmitter emitter(projectName + "/Dependencies/CMakeLists.txt");
 
 		cmakeFile << "# Generated by Magnet v" << MG_VERSION << "\n\n";
 		cmakeFile << "cmake_minimum_required(VERSION 3.16)\n";
@@ -591,7 +604,7 @@ endif ()
 
 	bool CommandHandler::RequireProjectName(const CommandHandlerProps& props)
 	{
-		if (props.projectName.empty())
+		if (props.project->GetName().empty())
 		{
 			MG_LOG("Command failed due to unknown project name.");
 			return false;

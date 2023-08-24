@@ -10,6 +10,19 @@
 
 namespace MG
 {
+	std::string CommandHandlerProps::GetArgument(uint32_t index) const
+	{
+		if (index >= nextArguments.size())
+			return "";
+
+		return nextArguments[index];
+	}
+
+	bool CommandHandlerProps::HasArguments() const
+	{
+		return !nextArguments.empty();
+	}
+
 	void CommandHandler::HandleHelpCommand([[maybe_unused]] const CommandHandlerProps& props)
 	{
 		MG_LOG("Usage: magnet <command> [options]\n");

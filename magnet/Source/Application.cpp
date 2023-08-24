@@ -12,6 +12,7 @@ namespace MG
 	static const std::unordered_map<std::string, void (*)(const CommandHandlerProps&)> m_Commands = {
 			{"help",     CommandHandler::HandleHelpCommand},
 			{"version",  CommandHandler::HandleVersionCommand},
+			{"config",   CommandHandler::HandleConfigCommand},
 			{"new",      CommandHandler::HandleNewCommand},
 			{"generate", CommandHandler::HandleGenerateCommand},
 			{"build",    CommandHandler::HandleBuildCommand},

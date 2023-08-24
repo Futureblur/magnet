@@ -41,6 +41,27 @@ namespace MG
 		MG_LOGNH("  switch <dependency> <branch> Switches a dependency branch.");
 	}
 
+	void CommandHandler::HandleConfigCommand(const CommandHandlerProps& props)
+	{
+		std::string nextArgument = props.GetArgument(0);
+		if (nextArgument.empty())
+		{
+			MG_LOG("Usage: magnet config <configuration>");
+			return;
+		}
+
+		Configuration configuration = Configuration::FromString(nextArgument);
+		Application::SetDefaultConfiguration(configuration);
+
+		if (!configuration.IsValid())
+		{
+			MG_LOG("Usage: magnet config [Debug/Release]");
+			return;
+		}
+
+		MG_LOG("Successfully changed default configuration to " + configuration.ToString() + ".");
+	}
+
 	void CommandHandler::HandleVersionCommand([[maybe_unused]] const CommandHandlerProps& props)
 	{
 		MG_LOG("Magnet v" + std::string(MG_VERSION));

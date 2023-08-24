@@ -66,8 +66,11 @@ namespace MG
 		static bool WriteDependencyFile(const std::vector<std::string>& dependencies,
 		                                const std::string& path = "");
 
+
+		// Returns whether the given project name is valid.
 		static bool RequireProjectName(const CommandHandlerProps& props);
 
+		// Executes the given command and returns whether it was successful.
 		static bool ExecuteCommand(const std::string& command, const std::string& errorMessage);
 	};
 }

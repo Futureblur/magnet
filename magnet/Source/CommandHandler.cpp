@@ -19,7 +19,7 @@ namespace MG
 		return nextArguments[index];
 	}
 
-	bool CommandHandlerProps::HasArguments() const
+	[[maybe_unused]] bool CommandHandlerProps::HasArguments() const
 	{
 		return !nextArguments.empty();
 	}

@@ -24,6 +24,8 @@ namespace MG
 		static std::string GetProjectName();
 		static std::string GetProjectType();
 		static int GetCppVersion();
+		static std::string GetCmakeVersion();
+		[[maybe_unused]] static void SetCmakeVersion(const std::string& version);
 		static std::string GetDefaultConfiguration();
 		static void SetDefaultConfiguration(const struct Configuration& configuration);
 

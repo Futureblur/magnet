@@ -149,11 +149,38 @@ namespace MG
 
 		YAML::Node config = YAML::LoadFile(".magnet/config.yaml");
 
-		auto cppDialectNode = config["cppDialect"];
+		auto cppDialectNode = config["cppVersion"];
 		if (cppDialectNode)
 			return cppDialectNode.as<int>();
 
-		return 0;
+		return -1;
+	}
+
+	std::string Application::GetCmakeVersion()
+	{
+		if (!IsRootLevel())
+			return "";
+
+		YAML::Node config = YAML::LoadFile(".magnet/config.yaml");
+
+		auto cmakeVersionNode = config["cmakeVersion"];
+		if (cmakeVersionNode)
+			return cmakeVersionNode.as<std::string>();
+
+		return "";
+	}
+
+	void Application::SetCmakeVersion(const std::string& version)
+	{
+		if (!IsRootLevel())
+			return;
+
+		YAML::Node config = YAML::LoadFile(".magnet/config.yaml");
+		config["cmakeVersion"] = version;
+
+		std::ofstream file(".magnet/config.yaml");
+		file << config;
+		file.close();
 	}
 
 	std::string Application::GetDefaultConfiguration()

@@ -18,7 +18,10 @@ namespace MG
 	void Configuration::SetMode(const std::string& mode)
 	{
 		std::string lowerCaseMode = mode;
-		std::transform(lowerCaseMode.begin(), lowerCaseMode.end(), lowerCaseMode.begin(), ::tolower);
+		std::transform(lowerCaseMode.begin(), lowerCaseMode.end(), lowerCaseMode.begin(), [](unsigned char c)
+		{
+			return std::tolower(c);
+		});
 
 		if (lowerCaseMode == "debug")
 			m_Mode = ConfigurationMode::Debug;
@@ -95,7 +98,10 @@ namespace MG
 	void Project::SetType(const std::string& type)
 	{
 		std::string lowerCaseType = type;
-		std::transform(lowerCaseType.begin(), lowerCaseType.end(), lowerCaseType.begin(), ::tolower);
+		std::transform(lowerCaseType.begin(), lowerCaseType.end(), lowerCaseType.begin(), [](unsigned char c)
+		{
+			return std::tolower(c);
+		});
 
 		if (lowerCaseType == "executable")
 			m_Type = ProjectType::Executable;

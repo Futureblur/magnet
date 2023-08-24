@@ -26,7 +26,8 @@ namespace MG
 		// Creates an if/else branch and executes the lambda for each clause.
 		// https://cmake.org/cmake/help/latest/command/if.html
 		void
-		Add_IfElse(const std::string& condition, std::function<void()> ifTrue, std::function<void()> ifFalse);
+		Add_IfElse(const std::string& condition, const std::function<void()>& ifTrue,
+		           const std::function<void()>& ifFalse);
 
 		// https://cmake.org/cmake/help/latest/command/cmake_minimum_required.html
 		void Add_CmakeMinimumRequired(const std::string& version);

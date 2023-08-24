@@ -41,8 +41,8 @@ namespace MG
 		m_Stream << "# " << comment << End();
 	}
 
-	void CmakeEmitter::Add_IfElse(const std::string& condition, std::function<void()> ifTrue,
-	                              std::function<void()> ifFalse)
+	void CmakeEmitter::Add_IfElse(const std::string& condition, const std::function<void()>& ifTrue,
+	                              const std::function<void()>& ifFalse)
 	{
 		m_Stream << "if(" << condition << ")" << End();
 

@@ -4,7 +4,7 @@
 
 namespace MG
 {
-	CmakeEmitter::CmakeEmitter(const std::string& path)
+	CmakeEmitter::CmakeEmitter(const std::filesystem::path& path)
 	{
 		m_Stream.open(path);
 	}

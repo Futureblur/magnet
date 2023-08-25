@@ -20,7 +20,7 @@ namespace MG
 		static void PrintPrompt();
 		static void Run();
 
-		static std::string GetCurrentWorkingDirectory();
+		static std::filesystem::path GetCurrentWorkingDirectory();
 		static std::string GetProjectName();
 		static std::string GetProjectType();
 		static int GetCppVersion();

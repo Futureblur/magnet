@@ -68,7 +68,7 @@ namespace MG
 		// Writes the given dependencies to the .magnet/dependencies file.
 		// If the path is empty, it will write to the default path.
 		static bool WriteDependencyFile(const std::vector<std::string>& dependencies,
-		                                const std::string& path = "");
+		                                const std::filesystem::path& path = "");
 
 
 		// Returns whether the given project name is valid.

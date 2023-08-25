@@ -138,7 +138,7 @@ namespace MG
 
 		std::string projectName = props.project->GetName();
 
-		const std::filesystem::path dependenciesPath = projectName + "/Dependencies";
+		const std::filesystem::path dependenciesPath = std::filesystem::path(projectName) / "Dependencies";
 		bool hasMissingDependencies = false;
 		if (std::filesystem::exists(dependenciesPath))
 		{
@@ -164,14 +164,15 @@ namespace MG
 		GenerateCMakeFiles(props);
 		GenerateDependencyCMakeFiles(props);
 
-		std::string generateCommand = "cmake -S . -B " + projectName + "/Build ";
+		std::filesystem::path buildPath = std::filesystem::path(projectName) / "Build";
+		std::string generateCommand = "cmake -S . -B " + buildPath.string();
 
 #if _WIN32
-		generateCommand += "-G \"Visual Studio 16 2019\"";
+		generateCommand += " -G \"Visual Studio 16 2019\"";
 #elif __APPLE__
-		generateCommand += "-G Xcode";
+		generateCommand += " -G Xcode";
 #elif __linux__
-		generateCommand += "-G \"Unix Makefiles\"";
+		generateCommand += " -G \"Unix Makefiles\"";
 #endif
 
 		if (!ExecuteCommand(generateCommand,
@@ -189,8 +190,8 @@ namespace MG
 		if (!RequireProjectName(props))
 			return;
 
-		std::string command = "cmake --build " + props.project->GetName() + "/Build --config " +
-		                      configuration;
+		std::string buildPath = std::filesystem::path(props.project->GetName()) / "Build";
+		std::string command = "cmake --build " + buildPath + " --config " + configuration;
 		if (!ExecuteCommand(command,
 		                    "CMake couldn't build the project. See messages above for more information. Have you tried generating your project files first? If not, run `magnet generate`."))
 			return;
@@ -207,7 +208,13 @@ namespace MG
 
 		std::string projectName = props.project->GetName();
 		std::string configuration = props.project->GetConfiguration().ToString();
+
+#ifdef _WIN32
+		std::string command = "start " / std::filesystem::path(projectName) / "Binaries" / configuration /
+							  projectName;
+#else
 		std::string command = "./" + projectName + "/Binaries/" + configuration + "/" + projectName;
+#endif
 		if (!ExecuteCommand(command, "Failed to launch project. See messages above for more information."))
 			return;
 	}
@@ -229,8 +236,8 @@ namespace MG
 		int removedItems = 0;
 		for (const auto& target : removeTargets)
 		{
-			std::string path = props.project->GetName() + target;
-			removedItems += (int) std::filesystem::remove_all(path);
+			std::filesystem::path path = std::filesystem::path(props.project->GetName()) / target;
+			removedItems += (int) std::filesystem::remove_all(path.generic_string());
 		}
 
 		if (removedItems == 0)
@@ -283,8 +290,9 @@ namespace MG
 		}
 
 		std::string name = ExtractRepositoryName(nextArgument);
-		std::string installPath = props.project->GetName() + "/Dependencies/" + name;
-		std::string command = "git submodule add " + nextArgument + " " + installPath;
+		std::filesystem::path installPath = std::filesystem::path(props.project->GetName()) / "Dependencies" /
+		                                    name;
+		std::string command = "git submodule add " + nextArgument + " " + installPath.string();
 
 		if (!ExecuteCommand(command,
 		                    "Failed to install dependency. See messages above for more information."))
@@ -327,19 +335,22 @@ namespace MG
 		if (!RequireProjectName(props))
 			return;
 
-		std::string installPath = props.project->GetName() + "/Dependencies/" + dependency;
-		std::string deinitCommand = "git submodule deinit -f " + installPath;
+		std::filesystem::path installPath = std::filesystem::path(props.project->GetName()) / "Dependencies" /
+		                                    dependency;
+		std::string deinitCommand = "git submodule deinit -f " + installPath.string();
 
 		if (!ExecuteCommand(deinitCommand,
 		                    "Failed to remove dependency. See messages above for more information."))
 			return;
 
-		std::string gitRemoveCommand = "git rm -f " + installPath;
+		std::string gitRemoveCommand = "git rm -f " + installPath.string();
 		if (!ExecuteCommand(gitRemoveCommand,
 		                    "Failed to remove dependency. See messages above for more information."))
 			return;
 
-		std::string removeGitModuleCommand = "rm -rf .git/modules/" + installPath;
+		std::filesystem::path gitModulesPath = std::filesystem::path(props.project->GetName()) / ".git" /
+		                                       "modules" / installPath;
+		std::string removeGitModuleCommand = "rm -rf " / gitModulesPath;
 		if (!ExecuteCommand(removeGitModuleCommand,
 		                    "Failed to remove dependency. See messages above for more information."))
 			return;
@@ -396,32 +407,41 @@ namespace MG
 
 		const std::string& name = project.GetName();
 
-		std::string templatePath = "magnet/magnet/Templates/MAGNET_NEW_PROJECT";
-		std::string newPath = Application::GetCurrentWorkingDirectory() + "/" + name;
+		std::filesystem::path templatePath = "magnet/magnet/Templates/MAGNET_NEW_PROJECT";
+		std::filesystem::path newPath = Application::GetCurrentWorkingDirectory() / name;
+
+		templatePath = templatePath.generic_string();
+		newPath = newPath.generic_string();
 
 		std::filesystem::copy(templatePath, newPath, std::filesystem::copy_options::recursive);
 
-		std::filesystem::rename(name + "/MAGNET_NEW_PROJECT", name + "/" + name);
+		{
+			std::filesystem::path fromPath = std::filesystem::path(name) / "MAGNET_NEW_PROJECT";
+			std::filesystem::path toPath = std::filesystem::path(name) / name;
+			std::filesystem::rename(fromPath, toPath);
+		}
 
 		// Read .gitignore file and replace MAGNET_NEW_PROJECT with project name
-		std::ifstream gitignore(name + "/.gitignore");
+		std::filesystem::path gitignorePath = std::filesystem::path(name) / ".gitignore";
+		std::ifstream gitignore(gitignorePath);
 		std::string gitignoreContent((std::istreambuf_iterator<char>(gitignore)),
 		                             std::istreambuf_iterator<char>());
 		gitignore.close();
 
-		std::ofstream newGitignore(name + "/.gitignore");
+		std::ofstream newGitignore(gitignorePath);
 		std::string newGitignoreContent = std::regex_replace(gitignoreContent,
 		                                                     std::regex("MAGNET_NEW_PROJECT"), name);
 		newGitignore << newGitignoreContent;
 		newGitignore.close();
 
 		// Read README.md file and replace MAGNET_NEW_PROJECT with project name
-		std::ifstream readme(name + "/README.md");
+		std::filesystem::path readmePath = std::filesystem::path(name) / "README.md";
+		std::ifstream readme(readmePath);
 		std::string readmeContent((std::istreambuf_iterator<char>(readme)),
 		                          std::istreambuf_iterator<char>());
 		readme.close();
 
-		std::ofstream newReadme(name + "/README.md");
+		std::ofstream newReadme(readmePath);
 		std::string newReadmeContent = std::regex_replace(readmeContent,
 		                                                  std::regex("MAGNET_NEW_PROJECT"), name);
 		newReadme << newReadmeContent;
@@ -443,8 +463,9 @@ namespace MG
 		out << YAML::EndMap;
 
 		// Create config.yaml file in .magnet folder which does not exist yet
-		std::filesystem::create_directory(name + "/.magnet");
-		std::ofstream config(name + "/.magnet/config.yaml");
+		std::filesystem::path magnetPath = std::filesystem::path(name) / ".magnet";
+		std::filesystem::create_directory(magnetPath);
+		std::ofstream config(magnetPath / "config.yaml");
 		config << out.c_str();
 
 		if (!config)
@@ -453,7 +474,7 @@ namespace MG
 			return;
 		}
 
-		WriteDependencyFile({}, name + "/.magnet/dependencies.yaml");
+		WriteDependencyFile({}, magnetPath / "dependencies.yaml");
 
 		std::string gitCommand = "git init " + name;
 		int status = std::system(gitCommand.c_str());
@@ -533,7 +554,7 @@ namespace MG
 		std::string projectName = props.project->GetName();
 		std::vector<std::string> sourceFiles;
 
-		std::string sourceFilesPath = projectName + "/Source";
+		std::filesystem::path sourceFilesPath = std::filesystem::path(projectName) / "Source";
 		for (auto& path : std::filesystem::recursive_directory_iterator(sourceFilesPath))
 		{
 			if (path.path().extension() == ".cpp" || path.path().extension() == ".h" ||
@@ -543,7 +564,8 @@ namespace MG
 			}
 		}
 
-		CmakeEmitter emitter(projectName + "/Source/CMakeLists.txt");
+		std::filesystem::path cmakePath = std::filesystem::path(projectName) / "Source" / "CMakeLists.txt";
+		CmakeEmitter emitter(cmakePath);
 
 		emitter.Add_Header();
 		emitter.Add_CmakeMinimumRequired(props.project->GetCmakeVersion());
@@ -602,7 +624,9 @@ namespace MG
 
 		std::string projectName = props.project->GetName();
 
-		CmakeEmitter emitter(projectName + "/Dependencies/CMakeLists.txt");
+		std::filesystem::path cmakePath = std::filesystem::path(projectName) / "Dependencies" /
+		                                  "CMakeLists.txt";
+		CmakeEmitter emitter(cmakePath);
 
 		emitter.Add_Header();
 		emitter.Add_CmakeMinimumRequired(props.project->GetCmakeVersion());
@@ -653,7 +677,7 @@ namespace MG
 	}
 
 	bool CommandHandler::WriteDependencyFile(const std::vector<std::string>& dependencies,
-	                                         const std::string& path)
+	                                         const std::filesystem::path& path)
 	{
 		YAML::Emitter out;
 
@@ -662,7 +686,8 @@ namespace MG
 		out << YAML::Value << dependencies;
 		out << YAML::EndMap;
 
-		std::ofstream file(path.empty() ? ".magnet/dependencies.yaml" : path);
+		std::filesystem::path dependenciesPath = std::filesystem::path(".magnet") / "dependencies.yaml";
+		std::ofstream file(path.empty() ? dependenciesPath : path);
 		file << out.c_str();
 
 		if (!file)

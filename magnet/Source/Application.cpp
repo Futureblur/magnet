@@ -110,9 +110,9 @@ namespace MG
 		}
 	}
 
-	std::string Application::GetCurrentWorkingDirectory()
+	std::filesystem::path Application::GetCurrentWorkingDirectory()
 	{
-		return std::filesystem::current_path().string();
+		return std::filesystem::current_path();
 	}
 
 	std::string Application::GetProjectName()

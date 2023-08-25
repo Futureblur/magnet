@@ -44,7 +44,6 @@ Follow the instructions for your system:
 2. Install [Build Tools for Visual Studio 2022](https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2022) with the following components: 
    - C++ clang tools for Windows
 3. Double-click `WindowsInstaller.bat` in `magnet/scripts`
-4. Your Visual Studio solution is located in `magnet/Build/magnet.sln`
 
 ### Linux:
 

@@ -14,7 +14,7 @@ rem Directory containing the magnet executable
 set MAGNET_DIR=%~dp0..\magnet\Binaries\Debug
 
 rem Add the magnet directory to the PATH
-set PATH=%PATH%;%MAGNET_DIR%
+set PATH=%MAGNET_DIR%;%PATH%
 
 echo Directory added to PATH: %MAGNET_DIR%
 echo New PATH: %PATH%

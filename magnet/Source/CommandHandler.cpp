@@ -547,11 +547,13 @@ namespace MG
 
 		auto ifTrue = [&]()
 		{
+			emitter.Add_Indentation();
 			emitter.Add_SetTargetProperties(projectName, "LINK_FLAGS", "-Wl, -rpath, ./");
 		};
 
 		auto ifFalse = [&]()
 		{
+			emitter.Add_Indentation();
 			emitter.Add_SetTargetProperties(projectName, "VS_DEBUGGER_WORKING_DIRECTORY",
 			                                "${CMAKE_SOURCE_DIR}/${PROJECT_NAME}/Binaries/Debug");
 		};

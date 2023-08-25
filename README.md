@@ -35,7 +35,7 @@ Follow the instructions for your system:
 ### macOS:
 
 1. Make sure you have [Homebrew](https://brew.sh/) installed
-2. Run the installer: `cd magnet/scripts && chmod +x ./macOSInstaller.sh && ./macOSInstaller.sh`
+2. Run the installer and replace `--generator` by either `--ninja` (for CLion) or `--xcode`: `cd magnet/scripts && chmod +x ./macOSInstaller.sh && ./macOSInstaller.sh --generator`
 3. Open `magnet/Build/magnet.xcodeproj` and build the `magnet` target: **⌘ + B**
 
 ### Windows:
@@ -55,7 +55,7 @@ Coming soon...
 # 🏛️ History
 
 Let’s face it: managing your dependencies in a C++ project is a pain in the butt.
-****
+
 On one hand, you can let existing solutions like Conan or vcpkg handle that, and on the other hand, you could take it on
 yourself and embrace the countless hours wasted on setting up a new project with your desired dependencies.
 

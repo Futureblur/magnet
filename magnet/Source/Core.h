@@ -1,6 +1,6 @@
 #pragma once
 
-#define MG_VERSION "0.4.0"
+#define MG_VERSION "0.4.1"
 
 #include "Application.h"
 

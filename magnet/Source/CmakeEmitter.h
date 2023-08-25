@@ -23,11 +23,14 @@ namespace MG
 
 		void Add_Comment(const std::string& comment);
 
+		// Creates an if branch and executes the lambda if condition is met.
+		// https://cmake.org/cmake/help/latest/command/if.html
+		void Add_If(const std::string& condition, const std::function<void()>& lambda);
+
 		// Creates an if/else branch and executes the lambda for each clause.
 		// https://cmake.org/cmake/help/latest/command/if.html
-		void
-		Add_IfElse(const std::string& condition, const std::function<void()>& ifTrue,
-		           const std::function<void()>& ifFalse);
+		void Add_IfElse(const std::string& condition, const std::function<void()>& ifTrue,
+		                const std::function<void()>& ifFalse);
 
 		// https://cmake.org/cmake/help/latest/command/cmake_minimum_required.html
 		void Add_CmakeMinimumRequired(const std::string& version);

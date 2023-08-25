@@ -28,12 +28,27 @@
 
 # 🛠️ Installation
 
-macOS ONLY (other platforms will be supported very soon™️):
+Clone repo: `git clone https://github.com/futureblur/magnet.git --recursive`
 
-1. Clone repo: `git clone https://github.com/futureblur/magnet.git --recursive`
-2. Generate Xcode project files: `cd magnet/scripts && chmod +x ./Xcode.sh && ./Xcode.sh`
-4. Open `magnet/Build/magnet.xcodeproj` and build `magnet` target: **⌘ + B**
-5. Create `magnet` symlink: `chmod +x ./macOSInstall.sh && ./macOSInstall.sh`
+Follow the instructions for your system:
+
+### macOS:
+
+1. Make sure you have [Homebrew](https://brew.sh/) installed
+2. Run the installer: `cd magnet/scripts && chmod +x ./macOSInstaller.sh && ./macOSInstaller.sh`
+3. Open `magnet/Build/magnet.xcodeproj` and build the `magnet` target: **⌘ + B**
+
+### Windows:
+
+1. Install [CMake](https://cmake.org/download/)
+2. Install [Build Tools for Visual Studio 2022](https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2022) with the following components: 
+   - C++ clang tools for Windows
+3. Double-click `WindowsInstaller.bat` in `magnet/scripts`
+4. Your Visual Studio solution is located in `magnet/Build/magnet.sln`
+
+### Linux:
+
+Coming soon...
 
 <br>
 

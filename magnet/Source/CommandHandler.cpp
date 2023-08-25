@@ -492,8 +492,19 @@ namespace MG
 
 		emitter.Add_Newline();
 
-		emitter.Add_TargetIncludeDirectories(props.project->GetName(), "PUBLIC",
-		                                     "${PROJECT_SOURCE_DIR}/${PROJECT_NAME}/Source");
+		emitter.Add_TargetIncludeDirectories(
+				props.project->GetName(), "PUBLIC", "${PROJECT_SOURCE_DIR}/${PROJECT_NAME}/Source");
+
+		emitter.Add_Newline();
+
+		emitter.Add_If("MSVC", [&]()
+		{
+			emitter.Add_Indentation();
+			emitter.Add_Literal(
+					"set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT " +
+					props.project->GetName() + ")");
+			emitter.Add_Newline();
+		});
 
 		return true;
 	}

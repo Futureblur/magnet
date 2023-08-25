@@ -21,4 +21,7 @@ echo New PATH: %PATH%
 
 endlocal
 
+echo Launching Visual Studio Solution
+start %~dp0..\magnet\Build\magnet.sln
+
 PAUSE

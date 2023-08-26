@@ -1,12 +1,13 @@
 #!/bin/bash
 
+echo "Updating apt..."
 sudo apt update
 
 # Get first argument
 if [ -z "$1" ]
 then
     echo "No argument supplied. Please specify the generator you want to use."
-    echo "Usage: ./Linux.sh [--ninja | --make]"
+    echo "Usage: ./LinuxInstaller.sh [--ninja | --make]"
     exit 1
 fi
 
@@ -14,7 +15,7 @@ fi
 if [ "$1" != "--ninja" ] && [ "$1" != "--make" ]
 then
     echo "Invalid generator."
-    echo "Usage: ./Linux.sh [--ninja | --make]"
+    echo "Usage: ./LinuxInstaller.sh [--ninja | --make]"
     exit 1
 fi
 

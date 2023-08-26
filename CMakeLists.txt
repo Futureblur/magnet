@@ -22,8 +22,12 @@ add_subdirectory("magnet/ThirdParty")
 
 target_compile_options(${PROJECT_NAME} PRIVATE
         $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
-        $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic -Werror>
+        $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic>
 )
+
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    add_compile_options("$<$<COMPILE_LANGUAGE:CXX>:-Werror>")
+endif ()
 
 if (MSVC)
     set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT magnet)

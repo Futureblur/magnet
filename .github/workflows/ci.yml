@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [ "dev" ]
+  pull_request:
+    branches: [ "dev" ]
+
+jobs:
+  docker-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Build and test in Docker
+        run: |
+          docker build -t magnet .
+          docker run magnet
+          
+  windows-build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Build with CMake
+        run: |
+          cmake -S . -B magnet/Build -G "Visual Studio 17 2022" -A x64
+          cmake --build magnet/Build --config Debug
+          cmake --build manget/Build --config Release
+      
+
+

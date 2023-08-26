@@ -2,6 +2,7 @@
 
 #include "Platform.h"
 
+#include <limits.h>
 #include <unistd.h>
 
 namespace MG

@@ -25,7 +25,7 @@ target_compile_options(${PROJECT_NAME} PRIVATE
         $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic>
 )
 
-if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+if (NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_compile_options("$<$<COMPILE_LANGUAGE:CXX>:-Werror>")
 endif ()
 

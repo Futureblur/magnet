@@ -586,7 +586,7 @@ namespace MG
 		}
 		else
 		{
-			std::string type = props.project->GetTypeString();
+			std::string type = props.project->GetCmakeTypeString();
 			emitter.Add_AddLibrary(projectName, type, sourceFiles);
 		}
 

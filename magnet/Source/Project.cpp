@@ -88,6 +88,19 @@ namespace MG
 		}
 	}
 
+	std::string Project::GetCmakeTypeString() const
+	{
+		switch (m_Type)
+		{
+			case ProjectType::StaticLibrary:
+				return "STATIC";
+			case ProjectType::DynamicLibrary:
+				return "SHARED";
+			default:
+				return "";
+		}
+	}
+
 	void Project::SetType(const ProjectType& type)
 	{
 		if (type == ProjectType::Unknown)

@@ -15,7 +15,7 @@ namespace MG
 		Application() = default;
 		~Application() = default;
 
-		static void Init(const CommandLineArguments& args);
+		static void Initialize(const CommandLineArguments& args);
 		static void Print(const std::string& host, const std::string& message);
 		static void PrintPrompt();
 		static void Run();

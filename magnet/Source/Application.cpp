@@ -4,28 +4,30 @@
 
 #include "CommandHandler.h"
 #include "Core.h"
+#include "Platform/Platform.h"
 #include "Project.h"
 
 namespace MG
 {
 	// Map commands to Handler functions.
 	static const std::unordered_map<std::string, void (*)(const CommandHandlerProps&)> m_Commands = {
-			{"help",     CommandHandler::HandleHelpCommand},
-			{"version",  CommandHandler::HandleVersionCommand},
-			{"config",   CommandHandler::HandleConfigCommand},
-			{"new",      CommandHandler::HandleNewCommand},
-			{"generate", CommandHandler::HandleGenerateCommand},
-			{"build",    CommandHandler::HandleBuildCommand},
-			{"go",       CommandHandler::HandleGoCommand},
-			{"clean",    CommandHandler::HandleCleanCommand},
-			{"pull",     CommandHandler::HandlePullCommand},
-			{"remove",   CommandHandler::HandleRemoveCommand},
-			{"switch",   CommandHandler::HandleSwitchCommand},
+			{ "help",     CommandHandler::HandleHelpCommand },
+			{ "version",  CommandHandler::HandleVersionCommand },
+			{ "config",   CommandHandler::HandleConfigCommand },
+			{ "new",      CommandHandler::HandleNewCommand },
+			{ "generate", CommandHandler::HandleGenerateCommand },
+			{ "build",    CommandHandler::HandleBuildCommand },
+			{ "go",       CommandHandler::HandleGoCommand },
+			{ "clean",    CommandHandler::HandleCleanCommand },
+			{ "pull",     CommandHandler::HandlePullCommand },
+			{ "remove",   CommandHandler::HandleRemoveCommand },
+			{ "switch",   CommandHandler::HandleSwitchCommand },
 	};
 
-	void Application::Init(const CommandLineArguments& args)
+	void Application::Initialize(const CommandLineArguments& args)
 	{
 		m_Arguments = args;
+		Platform::Initialize();
 	}
 
 	void Application::Print(const std::string& host, const std::string& message)
@@ -62,7 +64,7 @@ namespace MG
 					MG_LOG("It seems like you forgot to specify a command. Try `magnet help` for more information.");
 					break;
 				}
-				
+
 				skipFirst = false;
 				continue;
 			}

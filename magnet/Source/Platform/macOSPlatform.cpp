@@ -6,6 +6,10 @@
 
 namespace MG
 {
+	void Platform::Initialize()
+	{
+	}
+
 	std::filesystem::path Platform::GetExecutablePath()
 	{
 		char path[PATH_MAX];
@@ -23,7 +27,7 @@ namespace MG
 
 		std::filesystem::path p = path;
 		p.remove_filename();
-		
+
 		return p;
 	}
 }

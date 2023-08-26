@@ -2,10 +2,15 @@
 
 #include "Platform.h"
 
-#include <windows.h>
+#include <Windows.h>
 
 namespace MG
 {
+	void Platform::Initialize()
+	{
+		SetConsoleOutputCP(CP_UTF8);
+	}
+
 	std::filesystem::path Platform::GetExecutablePath()
 	{
 		char path[MAX_PATH];

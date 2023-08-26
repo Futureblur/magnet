@@ -50,9 +50,23 @@ namespace MG
 	void Application::Run()
 	{
 		uint32_t skipCounter = 0;
+		bool skipFirst = true;
 
 		for (int i = 0; i < m_Arguments.count; i++)
 		{
+			bool hasNext = i + 1 < m_Arguments.count;
+			if (skipFirst)
+			{
+				if (!hasNext)
+				{
+					MG_LOG("It seems like you forgot to specify a command. Try `magnet help` for more information.");
+					break;
+				}
+				
+				skipFirst = false;
+				continue;
+			}
+
 			if (skipCounter > 0)
 			{
 				skipCounter--;
@@ -61,22 +75,12 @@ namespace MG
 
 			std::string argument = m_Arguments.list[i];
 
-			bool hasNext = i + 1 < m_Arguments.count;
-
 			// Capture all arguments after the current one in a vector.
 			std::vector<std::string> nextArguments;
 			if (hasNext)
 			{
 				for (int j = i + 1; j < m_Arguments.count; j++)
 					nextArguments.emplace_back(m_Arguments.list[j]);
-			}
-
-			if (argument == "magnet")
-			{
-				if (!hasNext)
-					MG_LOG("No argument provided. Try `magnet help` for more information.");
-
-				continue;
 			}
 
 			skipCounter = (int) nextArguments.size();

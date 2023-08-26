@@ -168,7 +168,7 @@ namespace MG
 		std::string generateCommand = "cmake -S . -B " + buildPath.string();
 
 #if _WIN32
-		generateCommand += " -G \"Visual Studio 16 2019\"";
+		generateCommand += " -G \"Visual Studio 17 2022\" -A x64";
 #elif __APPLE__
 		generateCommand += " -G Xcode";
 #elif __linux__

@@ -13,7 +13,7 @@ namespace MG
 		std::filesystem::path p = path;
 
 		p.remove_filename();
-		return { p };
+		return p;
 	}
 }
 

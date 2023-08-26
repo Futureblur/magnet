@@ -3,35 +3,8 @@
 echo "Updating apt..."
 sudo apt update
 
-# Get first argument
-if [ -z "$1" ]
-then
-    echo "No argument supplied. Please specify the generator you want to use."
-    echo "Usage: ./LinuxInstaller.sh [--ninja | --make]"
-    exit 1
-fi
-
-# Check if the generator is valid
-if [ "$1" != "--ninja" ] && [ "$1" != "--make" ]
-then
-    echo "Invalid generator."
-    echo "Usage: ./LinuxInstaller.sh [--ninja | --make]"
-    exit 1
-fi
-
-# Install CMake if it is not installed
-if ! command -v cmake &> /dev/null
-then
-    echo "CMake could not be found. Installing CMake..."
-    sudo apt install cmake
-fi
-
-# Install Clang if it is not installed
-if ! command -v clang &> /dev/null
-then
-    echo "Clang could not be found. Installing Clang..."
-    sudo apt install clang
-fi
+echo "Installing dependencies..."
+sudo apt install cmake ninja-build clang
 
 # Remove old build files
 if [ -d "../magnet/Build" ]; then
@@ -43,26 +16,9 @@ if [ -d "../magnet/Binaries" ]; then
     rm -rf ../magnet/Binaries
 fi
 
-# Run generator according to the first argument
-if [ "$1" == "--ninja" ]
-then
-    if ! command -v ninja &> /dev/null
-    then
-        echo "Ninja could not be found. Installing Ninja..."
-        sudo apt install ninja-build
-    fi
-
-    echo "Running Ninja generator..."
-    chmod +x ./Ninja.sh
-    ./Ninja.sh
-fi
-
-if [ "$1" == "--make" ]
-then
-    echo "Running Makefile generator..."
-    chmod +x ./Makefile.sh
-    ./Makefile.sh
-fi
+echo "Running Ninja generator..."
+chmod +x ./Ninja.sh
+./Ninja.sh
 
 # Get the current directory
 current_dir=$(pwd)

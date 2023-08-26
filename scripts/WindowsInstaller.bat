@@ -3,7 +3,7 @@
 cd ..
 
 echo Generating project files
-cmake -S . -B magnet/Build -G "Visual Studio 17 2022" -A x64 -DCMAKE_CXX_COMPILER=clang++
+cmake -S . -B magnet/Build -G "Visual Studio 17 2022" -A x64
 
 echo Building project
 cmake --build magnet/Build --config Debug

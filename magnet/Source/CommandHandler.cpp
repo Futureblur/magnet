@@ -173,7 +173,7 @@ namespace MG
 #elif __APPLE__
 		generateCommand += " -G Xcode";
 #elif __linux__
-		generateCommand += " -G \"Unix Makefiles\"";
+		generateCommand += " -G \"Ninja\" -DCMAKE_BUILD_TYPE=" + props.project->GetConfiguration().ToString();
 #endif
 
 		if (!ExecuteCommand(generateCommand,

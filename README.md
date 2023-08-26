@@ -7,22 +7,22 @@
 
 # Features
 
-| Feature                                                                                      | Ready?          |
-|----------------------------------------------------------------------------------------------|-----------------|
-| CLI tool                                                                                     | ✅               |
-| Global command `magnet`                                                                      | ⚠️ (macOS only) |
-| Bootstrap a new C++ project with a single command                                            | ✅               |
-| Fine tuning after project creation (customize README, LICENSE, .gitignore, etc.)             | ✅               |
-| Automatically generate CMakeLists.txt files based on your dependencies and project structure | ✅               |
-| Pull dependencies from GitHub                                                                | ✅               |
-| Switch dependency branch                                                                     | ✅               |
-| Remove installed dependencies                                                                | ✅               |
-| Pull dependencies from GitLab                                                                | ❌               |
-| Pull dependencies from BitBucket                                                             | ❌               |
-| Pull dependencies from custom Git repositories                                               | ✅               |
-| macOS support (Xcode generator)                                                              | ✅               |
-| Linux support (Unix Makefiles generator)                                                     | ❌               |
-| Windows support (Visual Studio generator)                                                    | ❌               |
+| Feature                                                                                      | Ready?                    |
+|----------------------------------------------------------------------------------------------|---------------------------|
+| CLI tool                                                                                     | ✅                         |
+| Global command `magnet`                                                                      | ⚠️ (macOS & Windows only) |
+| Bootstrap a new C++ project with a single command                                            | ✅                         |
+| Fine tuning after project creation (customize README, LICENSE, .gitignore, etc.)             | ✅                         |
+| Automatically generate CMakeLists.txt files based on your dependencies and project structure | ✅                         |
+| Pull dependencies from GitHub                                                                | ✅                         |
+| Switch dependency branch                                                                     | ✅                         |
+| Remove installed dependencies                                                                | ✅                         |
+| Pull dependencies from GitLab                                                                | ❌                         |
+| Pull dependencies from BitBucket                                                             | ❌                         |
+| Pull dependencies from custom Git repositories                                               | ✅                         |
+| macOS support (Xcode generator)                                                              | ✅                         |
+| Windows support (Visual Studio 17 generator)                                                 | ✅                         |
+| Linux support (Unix Makefiles generator)                                                     | ❌                         |
 
 <br>
 

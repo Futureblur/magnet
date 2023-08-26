@@ -26,6 +26,13 @@ then
     sudo apt install cmake
 fi
 
+# Install Clang if it is not installed
+if ! command -v clang &> /dev/null
+then
+    echo "Clang could not be found. Installing Clang..."
+    sudo apt install clang
+fi
+
 # Remove old build files
 if [ -d "../magnet/Build" ]; then
     rm -rf ../magnet/Build

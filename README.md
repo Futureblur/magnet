@@ -46,7 +46,7 @@ Follow the instructions for your system:
 
 ### Linux:
 
-Coming soon...
+1. Run the installer: `cd magnet/scripts && chmod +x ./LinuxInstaller.sh && ./LinuxInstaller.sh`
 
 <br>
 

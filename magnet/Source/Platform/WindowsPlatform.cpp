@@ -2,11 +2,18 @@
 
 #include "Platform.h"
 
+#include <windows.h>
+
 namespace MG
 {
 	std::filesystem::path Platform::GetExecutablePath()
 	{
-		return std::filesystem::current_path();
+		char path[MAX_PATH];
+		GetModuleFileName(NULL, path, MAX_PATH);
+		std::filesystem::path p = path;
+
+		p.remove_filename();
+		return { p };
 	}
 }
 

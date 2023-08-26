@@ -18,7 +18,7 @@ jobs:
         run: |
           docker build -t magnet .
           docker run magnet
-          
+
   windows-build:
     runs-on: windows-latest
     steps:
@@ -30,7 +30,7 @@ jobs:
         run: |
           cmake -S . -B magnet/Build -G "Visual Studio 17 2022" -A x64
           cmake --build magnet/Build --config Debug
-          cmake --build manget/Build --config Release
+          cmake --build magnet/Build --config Release
       
 
 

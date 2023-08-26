@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/bash
 
 # This script is used to build the project on Unix systems.
 cd ..

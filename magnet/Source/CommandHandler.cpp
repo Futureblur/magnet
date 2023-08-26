@@ -478,6 +478,9 @@ namespace MG
 
 		WriteDependencyFile({}, magnetPath / "dependencies.yaml");
 
+		std::filesystem::path dependenciesPath = std::filesystem::path(name) / name / "Dependencies";
+		std::filesystem::create_directory(dependenciesPath);
+
 		std::string gitCommand = "git init " + name;
 		int status = std::system(gitCommand.c_str());
 		if (status != 0)

@@ -5,6 +5,7 @@
 #include "Application.h"
 #include "CmakeEmitter.h"
 #include "Core.h"
+#include "Platform/Platform.h"
 #include "Project.h"
 
 #include <regex>
@@ -409,7 +410,8 @@ namespace MG
 
 		const std::string& name = project.GetName();
 
-		std::filesystem::path templatePath = "magnet/magnet/Templates/MAGNET_NEW_PROJECT";
+		std::filesystem::path templatePath = Platform::GetExecutablePath() /
+		                                     "../../Templates/MAGNET_NEW_PROJECT";
 		std::filesystem::path newPath = Application::GetCurrentWorkingDirectory() / name;
 
 		templatePath = templatePath.generic_string();

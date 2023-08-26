@@ -10,7 +10,7 @@
 | Feature                                                                                      | Ready?                       |
 |----------------------------------------------------------------------------------------------|------------------------------|
 | CLI tool                                                                                     | ✅                            |
-| Global command `magnet`                                                                      | ⚠️ (not on Linux)            |
+| Global command `magnet`                                                                      | ✅                            |
 | Bootstrap a new C++ project with a single command                                            | ✅                            |
 | Fine tuning after project creation (customize README, LICENSE, .gitignore, etc.)             | ✅                            |
 | Edit individual CMakeLists.txt files for full customization                                  | ❌ (overwritten by generator) |
@@ -21,9 +21,9 @@
 | Pull dependencies from GitLab                                                                | ❌                            |
 | Pull dependencies from BitBucket                                                             | ❌                            |
 | Pull dependencies from custom Git repositories                                               | ✅                            |
-| macOS support (Xcode generator)                                                              | ✅                            |
+| macOS support (Xcode / Ninja generator)                                                      | ✅                            |
 | Windows support (Visual Studio 17 generator)                                                 | ✅                            |
-| Linux support (Unix Makefiles generator)                                                     | ❌                            |
+| Linux support (Ninja generator)                                                              | ✅                            |
 
 <br>
 

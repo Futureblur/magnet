@@ -11,7 +11,8 @@ add_executable(magnet EntryPoint.cpp Application.h Application.cpp CommandHandle
         CmakeEmitter.cpp
         Platform/Platform.h
         Platform/macOSPlatform.cpp
-        Platform/WindowsPlatform.cpp)
+        Platform/WindowsPlatform.cpp
+        Platform/LinuxPlatform.cpp)
 
 # Set rpath relative to app
 if (NOT MSVC)

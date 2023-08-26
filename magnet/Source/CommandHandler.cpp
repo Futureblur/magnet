@@ -190,8 +190,9 @@ namespace MG
 		if (!RequireProjectName(props))
 			return;
 
-		std::string buildPath = std::filesystem::path(props.project->GetName()) / "Build";
-		std::string command = "cmake --build " + buildPath + " --config " + configuration;
+		std::filesystem::path buildPath = std::filesystem::path(props.project->GetName()) / "Build";
+		std::string command = "cmake --build " + buildPath.string() + " --config " + configuration;
+
 		if (!ExecuteCommand(command,
 		                    "CMake couldn't build the project. See messages above for more information. Have you tried generating your project files first? If not, run `magnet generate`."))
 			return;
@@ -210,8 +211,9 @@ namespace MG
 		std::string configuration = props.project->GetConfiguration().ToString();
 
 #ifdef _WIN32
-		std::string command = "start " / std::filesystem::path(projectName) / "Binaries" / configuration /
-							  projectName;
+		std::filesystem::path appPath = std::filesystem::path(projectName) / "Binaries" / configuration
+										/ projectName;
+		std::string command = "start " + appPath.string();
 #else
 		std::string command = "./" + projectName + "/Binaries/" + configuration + "/" + projectName;
 #endif
@@ -227,10 +229,10 @@ namespace MG
 			return;
 
 		std::array<std::string, 4> removeTargets = {
-				"/Build/cmake_install.cmake",
-				"/Build/CMakeCache.txt",
-				"/Build/CMakeFiles",
-				"/Build/Makefile"
+				"Build/cmake_install.cmake",
+				"Build/CMakeCache.txt",
+				"Build/CMakeFiles",
+				"Build/Makefile"
 		};
 
 		int removedItems = 0;
@@ -350,7 +352,7 @@ namespace MG
 
 		std::filesystem::path gitModulesPath = std::filesystem::path(props.project->GetName()) / ".git" /
 		                                       "modules" / installPath;
-		std::string removeGitModuleCommand = "rm -rf " / gitModulesPath;
+		std::string removeGitModuleCommand = "rm -rf " + gitModulesPath.string();
 		if (!ExecuteCommand(removeGitModuleCommand,
 		                    "Failed to remove dependency. See messages above for more information."))
 			return;

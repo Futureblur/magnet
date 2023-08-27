@@ -5,13 +5,13 @@ cd ..
 rem Remove old build files if they exist
 if exist magnet/Build (
   echo "Removing old build files"
-  rmdir /s /q magnet/Build
+  rmdir /s /q "magnet/Build"
 )
 
 rem Remove old binaries if they exist
 if exist magnet/Binaries (
   echo "Removing old binaries"
-  rmdir /s /q magnet/Binaries
+  rmdir /s /q "magnet/Binaries"
 )
 
 echo Running Ninja generator

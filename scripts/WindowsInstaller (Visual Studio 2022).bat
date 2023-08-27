@@ -2,7 +2,19 @@
 
 cd ..
 
-echo Generating project files
+rem Remove old build files if they exist
+if exist magnet/Build (
+  echo "Removing old build files"
+  rmdir /s /q magnet/Build
+)
+
+rem Remove old binaries if they exist
+if exist magnet/Binaries (
+  echo "Removing old binaries"
+  rmdir /s /q magnet/Binaries
+)
+
+echo Running Visual Studio 2022 generator
 cmake -S . -B magnet/Build -G "Visual Studio 17 2022" -A x64
 
 echo Building project

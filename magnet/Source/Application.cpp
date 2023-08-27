@@ -128,13 +128,7 @@ namespace MG
 		if (!IsRootLevel())
 			return "";
 
-		YAML::Node config = YAML::LoadFile(".magnet/config.yaml");
-
-		auto nameNode = config["name"];
-		if (nameNode)
-			return nameNode.as<std::string>();
-
-		return "";
+		return GetYamlString(s_ConfigPath, "projectName");
 	}
 
 	std::string Application::GetProjectType()
@@ -142,13 +136,7 @@ namespace MG
 		if (!IsRootLevel())
 			return "";
 
-		YAML::Node config = YAML::LoadFile(".magnet/config.yaml");
-
-		auto projectTypeNode = config["projectType"];
-		if (projectTypeNode)
-			return projectTypeNode.as<std::string>();
-
-		return "";
+		return GetYamlString(s_ConfigPath, "projectType");
 	}
 
 	int Application::GetCppVersion()
@@ -156,13 +144,15 @@ namespace MG
 		if (!IsRootLevel())
 			return -1;
 
-		YAML::Node config = YAML::LoadFile(".magnet/config.yaml");
+		return GetYamlInt(s_ConfigPath, "cppVersion");
+	}
 
-		auto cppDialectNode = config["cppVersion"];
-		if (cppDialectNode)
-			return cppDialectNode.as<int>();
+	void Application::SetCppVersion(int version)
+	{
+		if (!IsRootLevel())
+			return;
 
-		return -1;
+		SetYamlInt(s_ConfigPath, "cppVersion", version);
 	}
 
 	std::string Application::GetCmakeVersion()
@@ -170,13 +160,7 @@ namespace MG
 		if (!IsRootLevel())
 			return "";
 
-		YAML::Node config = YAML::LoadFile(".magnet/config.yaml");
-
-		auto cmakeVersionNode = config["cmakeVersion"];
-		if (cmakeVersionNode)
-			return cmakeVersionNode.as<std::string>();
-
-		return "";
+		return GetYamlString(s_ConfigPath, "cmakeVersion");
 	}
 
 	[[maybe_unused]] void Application::SetCmakeVersion(const std::string& version)
@@ -184,12 +168,7 @@ namespace MG
 		if (!IsRootLevel())
 			return;
 
-		YAML::Node config = YAML::LoadFile(".magnet/config.yaml");
-		config["cmakeVersion"] = version;
-
-		std::ofstream file(".magnet/config.yaml");
-		file << config;
-		file.close();
+		SetYamlString(s_ConfigPath, "cmakeVersion", version);
 	}
 
 	std::string Application::GetDefaultConfiguration()
@@ -197,13 +176,7 @@ namespace MG
 		if (!IsRootLevel())
 			return "";
 
-		YAML::Node config = YAML::LoadFile(".magnet/config.yaml");
-
-		auto defaultConfigurationNode = config["defaultConfiguration"];
-		if (defaultConfigurationNode)
-			return defaultConfigurationNode.as<std::string>();
-
-		return "";
+		return GetYamlString(s_ConfigPath, "defaultConfiguration");
 	}
 
 	void Application::SetDefaultConfiguration(const Configuration& configuration)
@@ -211,12 +184,7 @@ namespace MG
 		if (!IsRootLevel())
 			return;
 
-		YAML::Node config = YAML::LoadFile(".magnet/config.yaml");
-		config["defaultConfiguration"] = configuration.ToString();
-
-		std::ofstream file(".magnet/config.yaml");
-		file << config;
-		file.close();
+		SetYamlString(s_ConfigPath, "defaultConfiguration", configuration.ToString());
 	}
 
 	std::vector<std::string> Application::GetDependencies()
@@ -234,6 +202,48 @@ namespace MG
 	bool Application::IsRootLevel()
 	{
 		return std::filesystem::exists(".magnet");
+	}
+
+	std::string Application::GetYamlString(const std::string& path, const std::string& key)
+	{
+		YAML::Node config = YAML::LoadFile(path);
+
+		auto node = config[key];
+		if (node)
+			return node.as<std::string>();
+
+		return "";
+	}
+
+	void Application::SetYamlString(const std::string& path, const std::string& key, const std::string& value)
+	{
+		YAML::Node config = YAML::LoadFile(path);
+		config[key] = value;
+
+		std::ofstream file(path);
+		file << config;
+		file.close();
+	}
+
+	int Application::GetYamlInt(const std::string& path, const std::string& key)
+	{
+		YAML::Node config = YAML::LoadFile(path);
+
+		auto node = config[key];
+		if (node)
+			return node.as<int>();
+
+		return -1;
+	}
+
+	void Application::SetYamlInt(const std::string& path, const std::string& key, int value)
+	{
+		YAML::Node config = YAML::LoadFile(path);
+		config[key] = value;
+
+		std::ofstream file(path);
+		file << config;
+		file.close();
 	}
 
 	Project Application::CreateConfiguredProject()

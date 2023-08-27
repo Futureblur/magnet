@@ -24,6 +24,7 @@ namespace MG
 		static std::string GetProjectName();
 		static std::string GetProjectType();
 		static int GetCppVersion();
+		static void SetCppVersion(int version);
 		static std::string GetCmakeVersion();
 		[[maybe_unused]] static void SetCmakeVersion(const std::string& version);
 		static std::string GetDefaultConfiguration();
@@ -33,11 +34,18 @@ namespace MG
 		static bool IsRootLevel();
 
 	private:
+		static std::string GetYamlString(const std::string& path, const std::string& key);
+		static void SetYamlString(const std::string& path, const std::string& key, const std::string& value);
+
+		static int GetYamlInt(const std::string& path, const std::string& key);
+		static void SetYamlInt(const std::string& path, const std::string& key, int value);
+
 		static class Project CreateConfiguredProject();
 		static void PopulateNextArguments(std::vector<std::string>* arguments, bool hasNext, int startIndex);
 		static bool CheckTypo(const std::string& argument);
 
 		static inline CommandLineArguments m_Arguments;
+		static inline constexpr const char* s_ConfigPath = ".magnet/config.yaml";
 	};
 }
 

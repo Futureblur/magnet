@@ -172,6 +172,13 @@ namespace MG
 		m_Stream << ")" << End();
 	}
 
+	void CmakeEmitter::Add_TargetPrecompileHeaders(const std::string& target, const std::string& mode,
+	                                               const std::string& header)
+	{
+		m_Stream << "target_precompile_headers(" << target << " " << mode << " " << header << ")"
+		         << End();
+	}
+
 	char CmakeEmitter::End()
 	{
 		return '\n';

@@ -610,8 +610,7 @@ namespace MG
 
 		emitter.Add_Newline();
 
-		emitter.Add_Comment("Precompiled headers");
-		emitter.Add_Comment("target_precompile_headers(${PROJECT_NAME} PUBLIC PCH.h)");
+		emitter.Add_TargetPrecompileHeaders("${PROJECT_NAME}", "PUBLIC", "PCH.h");
 
 		emitter.Add_Newline();
 

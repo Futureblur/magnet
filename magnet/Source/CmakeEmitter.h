@@ -80,6 +80,8 @@ namespace MG
 		void Add_AddLibrary(const std::string& target, const std::string& type,
 		                    const std::vector<std::string>& sources);
 
+		void Add_TargetPrecompileHeaders(const std::string& target, const std::string& mode,
+		                                 const std::string& header);
 
 	private:
 		// Returns a newline character.

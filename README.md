@@ -27,6 +27,7 @@
 | Linux support (Ninja generator)                                                              | ✅      |
 <br>
 See FAQ down below for more information.
+<br>
 
 # 🚀 Getting Started
 Create your brand new C++ project with a single command:
@@ -35,7 +36,7 @@ magnet new
 ```
 <br>
 
-Everytime your source code changes, simply run:
+Every time your source code changes, simply run:
 ```bash
 magnet generate
 ```

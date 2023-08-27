@@ -41,7 +41,7 @@ namespace MG
 
 	std::string Platform::GetGoCommand(const std::string& appPath)
 	{
-		return "./ " + appPath.string();
+		return "./ " + appPath;
 	}
 }
 

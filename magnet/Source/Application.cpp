@@ -24,6 +24,17 @@ namespace MG
 			{ "switch",   CommandHandler::HandleSwitchCommand },
 	};
 
+	static const std::unordered_map<std::string, std::string> m_SimilarCommands = {
+			{ "--help",    "help" },
+			{ "--version", "version" },
+			{ "run",       "go" },
+			{ "launch",    "go" },
+			{ "get",       "pull" },
+			{ "add",       "pull" },
+			{ "install",   "pull" },
+			{ "delete",    "remove" },
+	};
+
 	void Application::Initialize(const CommandLineArguments& args)
 	{
 		m_Arguments = args;
@@ -77,25 +88,13 @@ namespace MG
 
 			std::string argument = m_Arguments.list[i];
 
-			// Capture all arguments after the current one in a vector.
 			std::vector<std::string> nextArguments;
-			if (hasNext)
-			{
-				for (int j = i + 1; j < m_Arguments.count; j++)
-					nextArguments.emplace_back(m_Arguments.list[j]);
-			}
+			PopulateNextArguments(&nextArguments, hasNext, i + 1);
 
 			skipCounter = (int) nextArguments.size();
 
 			CommandHandlerProps props;
-
-			Project project;
-			project.SetName(Application::GetProjectName());
-			project.SetType(Application::GetProjectType());
-			project.SetCppVersion(Application::GetCppVersion());
-			project.SetCmakeVersion(Application::GetCmakeVersion());
-			project.SetConfiguration(Configuration::FromString(Application::GetDefaultConfiguration()));
-
+			auto project = CreateConfiguredProject();
 			props.project = &project;
 			props.nextArguments = nextArguments;
 
@@ -111,6 +110,9 @@ namespace MG
 				m_Commands.at(argument)(props);
 				continue;
 			}
+
+			if (CheckTypo(argument))
+				break;
 
 			MG_LOG("Invalid command `" + argument + "`. Try `magnet help` for more information.");
 		}
@@ -232,5 +234,40 @@ namespace MG
 	bool Application::IsRootLevel()
 	{
 		return std::filesystem::exists(".magnet");
+	}
+
+	Project Application::CreateConfiguredProject()
+	{
+		Project project;
+
+		project.SetName(Application::GetProjectName());
+		project.SetType(Application::GetProjectType());
+		project.SetCppVersion(Application::GetCppVersion());
+		project.SetCmakeVersion(Application::GetCmakeVersion());
+		project.SetConfiguration(Configuration::FromString(Application::GetDefaultConfiguration()));
+
+		return project;
+	}
+
+	void Application::PopulateNextArguments(std::vector<std::string>* arguments, bool hasNext, int startIndex)
+	{
+		if (hasNext)
+		{
+			for (int j = startIndex; j < m_Arguments.count; j++)
+				arguments->emplace_back(m_Arguments.list[j]);
+		}
+	}
+
+	bool Application::CheckTypo(const std::string& argument)
+	{
+		bool similarCommandExists = m_SimilarCommands.find(argument) != m_SimilarCommands.end();
+		if (similarCommandExists)
+		{
+			const std::string& similarCommand = m_SimilarCommands.at(argument);
+			MG_LOG("Did you mean `" + similarCommand + "`?");
+			return true;
+		}
+
+		return false;
 	}
 }

@@ -33,6 +33,10 @@ namespace MG
 		static bool IsRootLevel();
 
 	private:
+		static class Project CreateConfiguredProject();
+		static void PopulateNextArguments(std::vector<std::string>* arguments, bool hasNext, int startIndex);
+		static bool CheckTypo(const std::string& argument);
+
 		static inline CommandLineArguments m_Arguments;
 	};
 }

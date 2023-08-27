@@ -14,6 +14,9 @@ else ()
 endif ()
 
 set(YAML_CPP_BUILD_TOOLS OFF CACHE BOOL "Disable yaml-cpp build tools")
+set(YAML_CPP_BUILD_TESTS OFF CACHE BOOL "Disable yaml-cpp tests")
+set(YAML_CPP_BUILD_CONTRIB OFF CACHE BOOL "Disable yaml-cpp contrib in library")
+set_property(GLOBAL PROPERTY CTEST_TARGETS_ADDED 1)
 
 include_directories("magnet/Source")
 

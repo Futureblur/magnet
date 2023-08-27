@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CMakeSharedSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" ENABLED="true" GENERATION_DIR="magnet/Build/Debug" CONFIG_NAME="Debug" NO_GENERATOR="true" />
+      <configuration PROFILE_NAME="Release" ENABLED="true" GENERATION_DIR="magnet/Build/Release" CONFIG_NAME="RelWithDebInfo" NO_GENERATOR="true" />
+      <configuration PROFILE_NAME="Production" ENABLED="true" GENERATION_DIR="magnet/Build/Production" CONFIG_NAME="MinSizeRel" NO_GENERATOR="true" />
+    </configurations>
+  </component>
+</project>

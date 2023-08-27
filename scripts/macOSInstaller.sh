@@ -78,3 +78,10 @@ sudo ln -s $binary_path /usr/local/bin
 
 echo "You can now run 'magnet' from anywhere in the terminal."
 echo "To uninstall, run 'sudo rm -f /usr/local/bin/magnet'."
+
+# Launch Xcode project if the generator is Xcode
+if [ "$1" == "--xcode" ]
+then
+    echo "Launching Xcode project..."
+    open ../magnet/Build/magnet.xcodeproj
+fi

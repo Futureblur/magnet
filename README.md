@@ -20,8 +20,8 @@
 | Pull dependencies from GitHub                                                                | ✅      |
 | Switch dependency branch                                                                     | ✅      |
 | Remove installed dependencies                                                                | ✅      |
-| Pull dependencies from GitLab                                                                | ❌      |
-| Pull dependencies from BitBucket                                                             | ❌      |
+| Pull dependencies from GitLab                                                                | ✅      |
+| Pull dependencies from BitBucket                                                             | ✅      |
 | macOS support (Xcode / Ninja generator)                                                      | ✅      |
 | Windows support (Visual Studio 17 / Ninja generator)                                         | ✅      |
 | Linux support (Ninja generator)                                                              | ✅      |

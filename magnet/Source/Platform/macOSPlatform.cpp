@@ -30,6 +30,16 @@ namespace MG
 
 		return p;
 	}
+
+	std::string Platform::GetGenerateCommand([[maybe_unused]] const std::string& configuration)
+	{
+		return "-G Xcode";
+	}
+
+	std::string Platform::GetGoCommand(const std::string& appPath)
+	{
+		return "./ " + appPath;
+	}
 }
 
 #endif

@@ -33,6 +33,16 @@ namespace MG
 
 		return p;
 	}
+
+	std::string Platform::GetGenerateCommand([[maybe_unused]] const std::string& configuration)
+	{
+		return "-G \"Ninja\" -DCMAKE_BUILD_TYPE=" + configuration;
+	}
+
+	std::string Platform::GetGoCommand(const std::string& appPath)
+	{
+		return "./ " + appPath.string();
+	}
 }
 
 #endif

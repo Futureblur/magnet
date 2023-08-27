@@ -166,15 +166,10 @@ namespace MG
 		GenerateDependencyCMakeFiles(props);
 
 		std::filesystem::path buildPath = std::filesystem::path(projectName) / "Build";
-		std::string generateCommand = "cmake -S . -B " + buildPath.string();
+		std::string generateCommand = "cmake -S . -B " + buildPath.string() + " ";
 
-#if _WIN32
-		generateCommand += " -G \"Visual Studio 17 2022\" -A x64";
-#elif __APPLE__
-		generateCommand += " -G Xcode";
-#elif __linux__
-		generateCommand += " -G \"Ninja\" -DCMAKE_BUILD_TYPE=" + props.project->GetConfiguration().ToString();
-#endif
+		generateCommand += Platform::GetGenerateCommand(props.project->GetConfiguration().ToString());
+
 
 		if (!ExecuteCommand(generateCommand,
 		                    "CMake failed to generate project files. See messages above for more information."))
@@ -211,13 +206,9 @@ namespace MG
 		std::string projectName = props.project->GetName();
 		std::string configuration = props.project->GetConfiguration().ToString();
 
-#ifdef _WIN32
-		std::filesystem::path appPath = std::filesystem::path(projectName) / "Binaries" / configuration
-										/ projectName;
-		std::string command = "start " + appPath.string();
-#else
-		std::string command = "./" + projectName + "/Binaries/" + configuration + "/" + projectName;
-#endif
+		auto appPath = std::filesystem::path(projectName) / "Binaries" / configuration / projectName;
+		std::string command = Platform::GetGoCommand(appPath.string());
+
 		if (!ExecuteCommand(command, "Failed to launch project. See messages above for more information."))
 			return;
 	}

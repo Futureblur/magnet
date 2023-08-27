@@ -147,7 +147,7 @@ namespace MG
 		return GetYamlInt(s_ConfigPath, "cppVersion");
 	}
 
-	void Application::SetCppVersion(int version)
+	[[maybe_unused]] void Application::SetCppVersion(int version)
 	{
 		if (!IsRootLevel())
 			return;

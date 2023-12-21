@@ -128,7 +128,7 @@ namespace MG
 		if (!IsRootLevel())
 			return "";
 
-		return GetYamlString(s_ConfigPath, "projectName");
+		return GetYamlString(s_ConfigPath, "name");
 	}
 
 	std::string Application::GetProjectType()

@@ -11,28 +11,28 @@ namespace MG
 {
 	// Map commands to Handler functions.
 	static const std::unordered_map<std::string, void (*)(const CommandHandlerProps&)> m_Commands = {
-			{ "help",     CommandHandler::HandleHelpCommand },
-			{ "version",  CommandHandler::HandleVersionCommand },
-			{ "config",   CommandHandler::HandleConfigCommand },
-			{ "new",      CommandHandler::HandleNewCommand },
-			{ "generate", CommandHandler::HandleGenerateCommand },
-			{ "build",    CommandHandler::HandleBuildCommand },
-			{ "go",       CommandHandler::HandleGoCommand },
-			{ "clean",    CommandHandler::HandleCleanCommand },
-			{ "pull",     CommandHandler::HandlePullCommand },
-			{ "remove",   CommandHandler::HandleRemoveCommand },
-			{ "switch",   CommandHandler::HandleSwitchCommand },
+			{"help",     CommandHandler::HandleHelpCommand},
+			{"version",  CommandHandler::HandleVersionCommand},
+			{"config",   CommandHandler::HandleConfigCommand},
+			{"new",      CommandHandler::HandleNewCommand},
+			{"generate", CommandHandler::HandleGenerateCommand},
+			{"build",    CommandHandler::HandleBuildCommand},
+			{"go",       CommandHandler::HandleGoCommand},
+			{"clean",    CommandHandler::HandleCleanCommand},
+			{"pull",     CommandHandler::HandlePullCommand},
+			{"remove",   CommandHandler::HandleRemoveCommand},
+			{"switch",   CommandHandler::HandleSwitchCommand},
 	};
 
 	static const std::unordered_map<std::string, std::string> m_SimilarCommands = {
-			{ "--help",    "help" },
-			{ "--version", "version" },
-			{ "run",       "go" },
-			{ "launch",    "go" },
-			{ "get",       "pull" },
-			{ "add",       "pull" },
-			{ "install",   "pull" },
-			{ "delete",    "remove" },
+			{"--help",    "help"},
+			{"--version", "version"},
+			{"run",       "go"},
+			{"launch",    "go"},
+			{"get",       "pull"},
+			{"add",       "pull"},
+			{"install",   "pull"},
+			{"delete",    "remove"},
 	};
 
 	void Application::Initialize(const CommandLineArguments& args)

@@ -117,8 +117,7 @@ namespace MG
 				}
 
 				break;
-			}
-			else
+			} else
 				break;
 		} while (true);
 
@@ -575,8 +574,7 @@ namespace MG
 		if (isExecutable)
 		{
 			emitter.Add_AddExecutable(projectName, sourceFiles);
-		}
-		else
+		} else
 		{
 			std::string type = props.project->GetCmakeTypeString();
 			emitter.Add_AddLibrary(projectName, type, sourceFiles);

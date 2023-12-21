@@ -442,6 +442,19 @@ namespace MG
 		newReadme << newReadmeContent;
 		newReadme.close();
 
+		// Read .idea/cmake.xml file and replace MAGNET_NEW_PROJECT with project name
+		std::filesystem::path cmakePath = std::filesystem::path(name) / ".idea" / "cmake.xml";
+		std::ifstream cmake(cmakePath);
+		std::string cmakeContent((std::istreambuf_iterator<char>(cmake)),
+		                         std::istreambuf_iterator<char>());
+		cmake.close();
+
+		std::ofstream newCmake(cmakePath);
+		std::string newCmakeContent = std::regex_replace(cmakeContent,
+		                                                 std::regex("MAGNET_NEW_PROJECT"), name);
+		newCmake << newCmakeContent;
+		newCmake.close();
+
 		YAML::Emitter out;
 
 		out << YAML::BeginMap;

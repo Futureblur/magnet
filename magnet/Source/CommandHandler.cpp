@@ -55,13 +55,14 @@ namespace MG
 		}
 
 		Configuration configuration = Configuration::FromString(nextArgument);
-		Application::SetDefaultConfiguration(configuration);
 
 		if (!configuration.IsValid())
 		{
 			MG_LOG("Usage: magnet config [Debug/Release]");
 			return;
 		}
+
+		Application::SetDefaultConfiguration(configuration);
 
 		MG_LOG("Successfully changed default configuration to " + configuration.ToString() + ".");
 	}

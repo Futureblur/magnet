@@ -8,8 +8,6 @@
 #include "Platform/Platform.h"
 #include "Project.h"
 
-#include <regex>
-
 namespace MG
 {
 	std::string CommandHandlerProps::GetArgument(uint32_t index) const
@@ -198,6 +196,9 @@ namespace MG
 
 	void CommandHandler::HandleGoCommand(const CommandHandlerProps& props)
 	{
+		HandleGenerateCommand(props);
+		HandleBuildCommand(props);
+
 		MG_LOG("Launching project...");
 
 		if (!RequireProjectName(props))

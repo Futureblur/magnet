@@ -17,6 +17,9 @@ namespace MG
 		// Returns the argument by index.
 		[[maybe_unused]] [[nodiscard]] std::string GetArgument(uint32_t index) const;
 
+		// Consolidates all the arguments into a single string.
+		[[nodiscard]] std::string ConvertArgumetsToString() const;
+
 		// Returns whether there are any arguments left.
 		[[maybe_unused]] [[nodiscard]] bool HasArguments() const;
 

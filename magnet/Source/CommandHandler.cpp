@@ -18,6 +18,20 @@ namespace MG
 		return nextArguments[index];
 	}
 
+	std::string CommandHandlerProps::ConvertArgumetsToString() const
+	{
+		if (nextArguments.empty())
+			return "";
+
+		auto arguments = std::accumulate(nextArguments.begin(), nextArguments.end(), std::string(),
+		                                 [](const std::string& a, const std::string& b)
+		                                 {
+			                                 return a + " " + b;
+		                                 });
+		// Remove the first space.
+		return arguments.substr(1);
+	}
+
 	[[maybe_unused]] bool CommandHandlerProps::HasArguments() const
 	{
 		return !nextArguments.empty();
@@ -167,7 +181,7 @@ namespace MG
 		std::string generateCommand = "cmake -S . -B " + buildPath.string() + " ";
 
 		generateCommand += Platform::GetGenerateCommand(props.project->GetConfiguration().ToString());
-
+		generateCommand += " " + props.ConvertArgumetsToString();
 
 		if (!ExecuteCommand(generateCommand,
 		                    "CMake failed to generate project files. See messages above for more information."))
@@ -185,7 +199,8 @@ namespace MG
 			return;
 
 		std::filesystem::path buildPath = std::filesystem::path(props.project->GetName()) / "Build";
-		std::string command = "cmake --build " + buildPath.string() + " --config " + configuration;
+		std::string command = "cmake --build " + buildPath.string() + " --config " + configuration + " " +
+		                      props.ConvertArgumetsToString();
 
 		if (!ExecuteCommand(command,
 		                    "CMake couldn't build the project. See messages above for more information. Have you tried generating your project files first? If not, run `magnet generate`."))
@@ -209,6 +224,7 @@ namespace MG
 
 		auto appPath = std::filesystem::path(projectName) / "Binaries" / configuration / projectName;
 		std::string command = Platform::GetGoCommand(appPath.string());
+		command += " " + props.ConvertArgumetsToString();
 
 		if (!ExecuteCommand(command, "Failed to launch project. See messages above for more information."))
 			return;

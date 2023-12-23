@@ -17,11 +17,9 @@
 | Fine tuning after project creation (customize README, LICENSE, .gitignore, etc.)             | ✅      |
 | Edit individual CMakeLists.txt files for full customization                                  | ❌      |
 | Automatically generate CMakeLists.txt files based on your dependencies and project structure | ✅      |
-| Pull dependencies from GitHub                                                                | ✅      |
+| Pull dependencies from GitHub / GitLab / BitBucket                                           | ✅      |
 | Switch dependency branch                                                                     | ✅      |
 | Remove installed dependencies                                                                | ✅      |
-| Pull dependencies from GitLab                                                                | ✅      |
-| Pull dependencies from BitBucket                                                             | ✅      |
 | macOS support (Xcode / Ninja generator)                                                      | ✅      |
 | Windows support (Visual Studio 17 / Ninja generator)                                         | ✅      |
 | Linux support (Ninja generator)                                                              | ✅      |

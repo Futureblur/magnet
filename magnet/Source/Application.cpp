@@ -29,10 +29,18 @@ namespace MG
 			{"--version", "version"},
 			{"run",       "go"},
 			{"launch",    "go"},
+			{"start",     "go"},
+			{"clear",     "clean"},
+			{"rm",        "remove"},
+			{"change",    "switch"},
+			{"swap",      "switch"},
+			{"fetch",     "pull"},
 			{"get",       "pull"},
 			{"add",       "pull"},
 			{"install",   "pull"},
+			{"uninstall", "remove"},
 			{"delete",    "remove"},
+			{"erase",     "remove"},
 	};
 
 	void Application::Initialize(const CommandLineArguments& args)

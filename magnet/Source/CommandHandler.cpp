@@ -521,7 +521,12 @@ namespace MG
 		if (!RequireProjectName(props))
 			return false;
 
-		CmakeEmitter emitter("CMakeLists.txt");
+		// Before overwriting the CMakeLists.txt file, we'll extract the custom code
+		// and add it back after we're done generating.
+		std::filesystem::path cmakeFilePath = "CMakeLists.txt";
+		std::string customCode = ExtractCustomCMakeCode(cmakeFilePath);
+
+		CmakeEmitter emitter(cmakeFilePath);
 
 		emitter.Add_Header();
 		emitter.Add_CmakeMinimumRequired(props.project->GetCmakeVersion());
@@ -571,6 +576,16 @@ namespace MG
 			emitter.Add_Newline();
 		});
 
+		emitter.Add_Newline(2);
+		emitter.Add_Comment("Insert your own CMake commands after this line.", true);
+
+		if (customCode.empty() || customCode == "\n")
+		{
+			emitter.Add_Newline();
+			return true;
+		}
+
+		emitter.Add_Literal(customCode);
 		return true;
 	}
 
@@ -592,7 +607,11 @@ namespace MG
 			}
 		}
 
+		// Before overwriting the CMakeLists.txt file, we'll extract the custom code
+		// and add it back after we're done generating.
 		std::filesystem::path cmakePath = std::filesystem::path(projectName) / "Source" / "CMakeLists.txt";
+		std::string customCode = ExtractCustomCMakeCode(cmakePath);
+
 		CmakeEmitter emitter(cmakePath);
 
 		emitter.Add_Header();
@@ -640,6 +659,15 @@ namespace MG
 			emitter.Add_TargetLinkLibraries(projectName, dependencies);
 		}
 
+		emitter.Add_Newline();
+		emitter.Add_Comment("Insert your own CMake commands after this line.", true);
+		if (customCode.empty() || customCode == "\n")
+		{
+			emitter.Add_Newline();
+			return true;
+		}
+
+		emitter.Add_Literal(customCode);
 		return true;
 	}
 
@@ -650,8 +678,11 @@ namespace MG
 
 		std::string projectName = props.project->GetName();
 
-		std::filesystem::path cmakePath = std::filesystem::path(projectName) / "Dependencies" /
-		                                  "CMakeLists.txt";
+		// Before overwriting the CMakeLists.txt file, we'll extract the custom code
+		// and add it back after we're done generating.
+		std::filesystem::path cmakePath = std::filesystem::path(projectName) / "Dependencies" / "CMakeLists.txt";
+		std::string customCode = ExtractCustomCMakeCode(cmakePath);
+
 		CmakeEmitter emitter(cmakePath);
 
 		emitter.Add_Header();
@@ -691,6 +722,16 @@ namespace MG
 			emitter.End_TargetIncludeDirectories();
 		}
 
+		emitter.Add_Newline();
+		emitter.Add_Comment("Insert your own CMake commands after this line.", true);
+
+		if (customCode.empty() || customCode == "\n")
+		{
+			emitter.Add_Newline();
+			return true;
+		}
+
+		emitter.Add_Literal(customCode);
 		return true;
 	}
 

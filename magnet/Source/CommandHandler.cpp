@@ -694,6 +694,22 @@ namespace MG
 		return true;
 	}
 
+	std::string CommandHandler::ExtractCustomCMakeCode(const std::string& path)
+	{
+		std::ifstream cmakeFile(path);
+
+		if (!cmakeFile)
+			return "";
+
+		std::string content((std::istreambuf_iterator<char>(cmakeFile)),
+		                    std::istreambuf_iterator<char>());
+
+		std::string indicator = "# Insert your own CMake commands after this line.";
+		std::string customCode = content.substr(content.find(indicator) + indicator.length());
+
+		return customCode;
+	}
+
 	std::string CommandHandler::ExtractRepositoryName(const std::string& url)
 	{
 		std::string name = url;

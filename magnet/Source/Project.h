@@ -58,7 +58,7 @@ namespace MG
 
 		[[nodiscard]] const ProjectType& GetType() const;
 		[[nodiscard]] std::string GetTypeString() const;
-		
+
 		// Returns the type as a string that can be used in CMake.
 		// Converts StaticLibrary to STATIC and DynamicLibrary to SHARED.
 		[[nodiscard]] std::string GetCmakeTypeString() const;

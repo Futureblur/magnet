@@ -48,4 +48,3 @@ namespace MG
 		static inline constexpr const char* s_ConfigPath = ".magnet/config.yaml";
 	};
 }
-

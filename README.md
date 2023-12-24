@@ -15,7 +15,7 @@
 | Run Magnet on existing projects                                                              | ❌      |
 | Bootstrap a new C++ project with a single command                                            | ✅      |
 | Fine tuning after project creation (customize README, LICENSE, .gitignore, etc.)             | ✅      |
-| Edit individual CMakeLists.txt files for full customization                                  | ❌      |
+| Edit individual CMakeLists.txt files for full customization                                  | ✅      |
 | Automatically generate CMakeLists.txt files based on your dependencies and project structure | ✅      |
 | Pull dependencies from GitHub / GitLab / BitBucket                                           | ✅      |
 | Switch dependency branch                                                                     | ✅      |
@@ -182,12 +182,18 @@ battle-tested technologies to do the heavy lifting.
 
 What you see, is what you get.
 
-Installing Magnet for your system takes 60 seconds.
-Pulling a dependency, 10 seconds.
+Installing Magnet for your system takes 60 seconds. <br>
+Pulling a dependency, 10 seconds. <br>
 Scaffolding a new project, 5 seconds.
 
 Imagine what you could do will all of this free time now.
-Say goodbye to unexpected setup errors: allowing you to focus on coding and innovating great products.
+Say goodbye to unexpected setup errors and finally dedicate your time to what really matters: your next project.
+This time, powered by Magnet.
+
+<br>
+
+# 🪁 Contributing
+Pull requests are more than welcome. Please read [CONTRIBUTING.md](CONTRIBUTING.md) for more details.
 
 <br>
 

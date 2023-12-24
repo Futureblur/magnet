@@ -129,9 +129,11 @@ namespace MG
 				}
 
 				break;
-			} else
-				break;
-		} while (true);
+			}
+
+			break;
+		}
+		while (true);
 
 		CreateNewProject(project);
 	}
@@ -237,18 +239,19 @@ namespace MG
 		if (!RequireProjectName(props))
 			return;
 
-		std::array<std::string, 4> removeTargets = {
-				"Build/cmake_install.cmake",
-				"Build/CMakeCache.txt",
-				"Build/CMakeFiles",
-				"Build/Makefile"
+		std::array<std::string, 4> removeTargets =
+		{
+			"Build/cmake_install.cmake",
+			"Build/CMakeCache.txt",
+			"Build/CMakeFiles",
+			"Build/Makefile"
 		};
 
 		int removedItems = 0;
 		for (const auto& target : removeTargets)
 		{
 			std::filesystem::path path = std::filesystem::path(props.project->GetName()) / target;
-			removedItems += (int) std::filesystem::remove_all(path.generic_string());
+			removedItems += static_cast<int>(std::filesystem::remove_all(path.generic_string()));
 		}
 
 		if (removedItems == 0)
@@ -513,7 +516,7 @@ namespace MG
 		}
 
 		MG_LOG_HOST("Project Wizard", name + " has been created.\nNext steps: `cd " + name +
-		                              " && magnet generate` to generate project files.");
+		            " && magnet generate` to generate project files.");
 	}
 
 	bool CommandHandler::GenerateRootCMakeFile(const CommandHandlerProps& props)
@@ -542,13 +545,13 @@ namespace MG
 		{
 			emitter.Add_Indentation();
 			emitter.Add_SetCmakeArchiveOutputDirectory(
-					"${PROJECT_SOURCE_DIR}/${PROJECT_NAME}/Binaries/${CMAKE_BUILD_TYPE}");
+				"${PROJECT_SOURCE_DIR}/${PROJECT_NAME}/Binaries/${CMAKE_BUILD_TYPE}");
 			emitter.Add_Indentation();
 			emitter.Add_SetCmakeLibraryOutputDirectory(
-					"${PROJECT_SOURCE_DIR}/${PROJECT_NAME}/Binaries/${CMAKE_BUILD_TYPE}");
+				"${PROJECT_SOURCE_DIR}/${PROJECT_NAME}/Binaries/${CMAKE_BUILD_TYPE}");
 			emitter.Add_Indentation();
 			emitter.Add_SetCmakeRuntimeOutputDirectory(
-					"${PROJECT_SOURCE_DIR}/${PROJECT_NAME}/Binaries/${CMAKE_BUILD_TYPE}");
+				"${PROJECT_SOURCE_DIR}/${PROJECT_NAME}/Binaries/${CMAKE_BUILD_TYPE}");
 		};
 
 		auto ifFalse = [&emitter]()
@@ -572,16 +575,15 @@ namespace MG
 		emitter.Add_Newline();
 
 		emitter.Add_TargetIncludeDirectories(
-				props.project->GetName(), "PUBLIC", "${PROJECT_SOURCE_DIR}/${PROJECT_NAME}/Source");
+			props.project->GetName(), "PUBLIC", "${PROJECT_SOURCE_DIR}/${PROJECT_NAME}/Source");
 
 		emitter.Add_Newline();
 
 		emitter.Add_If("MSVC", [&]()
 		{
 			emitter.Add_Indentation();
-			emitter.Add_Literal(
-					"set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT " +
-					props.project->GetName() + ")");
+			emitter.Add_Literal("set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT " +
+			                    props.project->GetName() + ")");
 			emitter.Add_Newline();
 		});
 
@@ -632,7 +634,8 @@ namespace MG
 		if (isExecutable)
 		{
 			emitter.Add_AddExecutable(projectName, sourceFiles);
-		} else
+		}
+		else
 		{
 			std::string type = props.project->GetCmakeTypeString();
 			emitter.Add_AddLibrary(projectName, type, sourceFiles);
@@ -670,7 +673,7 @@ namespace MG
 
 		emitter.Add_Newline();
 		emitter.Add_Comment("Insert your own CMake commands after this line.", true);
-		
+
 		if (customCode.empty() || customCode == "\n")
 		{
 			emitter.Add_Newline();

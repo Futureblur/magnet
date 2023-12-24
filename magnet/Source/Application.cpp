@@ -10,37 +10,39 @@
 namespace MG
 {
 	// Map commands to Handler functions.
-	static const std::unordered_map<std::string, void (*)(const CommandHandlerProps&)> m_Commands = {
-			{"help",     CommandHandler::HandleHelpCommand},
-			{"version",  CommandHandler::HandleVersionCommand},
-			{"config",   CommandHandler::HandleConfigCommand},
-			{"new",      CommandHandler::HandleNewCommand},
-			{"generate", CommandHandler::HandleGenerateCommand},
-			{"build",    CommandHandler::HandleBuildCommand},
-			{"go",       CommandHandler::HandleGoCommand},
-			{"clean",    CommandHandler::HandleCleanCommand},
-			{"pull",     CommandHandler::HandlePullCommand},
-			{"remove",   CommandHandler::HandleRemoveCommand},
-			{"switch",   CommandHandler::HandleSwitchCommand},
+	static const std::unordered_map<std::string, void (*)(const CommandHandlerProps&)> m_Commands =
+	{
+		{ "help", CommandHandler::HandleHelpCommand },
+		{ "version", CommandHandler::HandleVersionCommand },
+		{ "config", CommandHandler::HandleConfigCommand },
+		{ "new", CommandHandler::HandleNewCommand },
+		{ "generate", CommandHandler::HandleGenerateCommand },
+		{ "build", CommandHandler::HandleBuildCommand },
+		{ "go", CommandHandler::HandleGoCommand },
+		{ "clean", CommandHandler::HandleCleanCommand },
+		{ "pull", CommandHandler::HandlePullCommand },
+		{ "remove", CommandHandler::HandleRemoveCommand },
+		{ "switch", CommandHandler::HandleSwitchCommand },
 	};
 
-	static const std::unordered_map<std::string, std::string> m_SimilarCommands = {
-			{"--help",    "help"},
-			{"--version", "version"},
-			{"run",       "go"},
-			{"launch",    "go"},
-			{"start",     "go"},
-			{"clear",     "clean"},
-			{"rm",        "remove"},
-			{"change",    "switch"},
-			{"swap",      "switch"},
-			{"fetch",     "pull"},
-			{"get",       "pull"},
-			{"add",       "pull"},
-			{"install",   "pull"},
-			{"uninstall", "remove"},
-			{"delete",    "remove"},
-			{"erase",     "remove"},
+	static const std::unordered_map<std::string, std::string> m_SimilarCommands =
+	{
+		{ "--help", "help" },
+		{ "--version", "version" },
+		{ "run", "go" },
+		{ "launch", "go" },
+		{ "start", "go" },
+		{ "clear", "clean" },
+		{ "rm", "remove" },
+		{ "change", "switch" },
+		{ "swap", "switch" },
+		{ "fetch", "pull" },
+		{ "get", "pull" },
+		{ "add", "pull" },
+		{ "install", "pull" },
+		{ "uninstall", "remove" },
+		{ "delete", "remove" },
+		{ "erase", "remove" },
 	};
 
 	void Application::Initialize(const CommandLineArguments& args)
@@ -99,7 +101,7 @@ namespace MG
 			std::vector<std::string> nextArguments;
 			PopulateNextArguments(&nextArguments, hasNext, i + 1);
 
-			skipCounter = (int) nextArguments.size();
+			skipCounter = (int)nextArguments.size();
 
 			CommandHandlerProps props;
 			auto project = CreateConfiguredProject();
@@ -111,7 +113,8 @@ namespace MG
 			{
 				if (!props.project->IsValid() && !CommandHandler::IsCommandGlobal(argument))
 				{
-					MG_LOG("It seems like there is no project in this folder, or the current configuration is corrupted. Try `magnet help` for more information.");
+					MG_LOG(
+						"It seems like there is no project in this folder, or the current configuration is corrupted. Try `magnet help` for more information.");
 					break;
 				}
 
@@ -258,11 +261,11 @@ namespace MG
 	{
 		Project project;
 
-		project.SetName(Application::GetProjectName());
-		project.SetType(Application::GetProjectType());
-		project.SetCppVersion(Application::GetCppVersion());
-		project.SetCmakeVersion(Application::GetCmakeVersion());
-		project.SetConfiguration(Configuration::FromString(Application::GetDefaultConfiguration()));
+		project.SetName(GetProjectName());
+		project.SetType(GetProjectType());
+		project.SetCppVersion(GetCppVersion());
+		project.SetCmakeVersion(GetCmakeVersion());
+		project.SetConfiguration(Configuration::FromString(GetDefaultConfiguration()));
 
 		return project;
 	}

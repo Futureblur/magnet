@@ -536,20 +536,28 @@ namespace MG
 
 		emitter.Add_SetCmakeCxxStandard(props.project->GetCppVersion());
 
+		emitter.Add_Newline();
+
 		auto ifTrue = [&emitter]()
 		{
+			emitter.Add_Indentation();
 			emitter.Add_SetCmakeArchiveOutputDirectory(
 					"${PROJECT_SOURCE_DIR}/${PROJECT_NAME}/Binaries/${CMAKE_BUILD_TYPE}");
+			emitter.Add_Indentation();
 			emitter.Add_SetCmakeLibraryOutputDirectory(
 					"${PROJECT_SOURCE_DIR}/${PROJECT_NAME}/Binaries/${CMAKE_BUILD_TYPE}");
+			emitter.Add_Indentation();
 			emitter.Add_SetCmakeRuntimeOutputDirectory(
 					"${PROJECT_SOURCE_DIR}/${PROJECT_NAME}/Binaries/${CMAKE_BUILD_TYPE}");
 		};
 
 		auto ifFalse = [&emitter]()
 		{
+			emitter.Add_Indentation();
 			emitter.Add_SetCmakeArchiveOutputDirectory("${PROJECT_SOURCE_DIR}/${PROJECT_NAME}/Binaries");
+			emitter.Add_Indentation();
 			emitter.Add_SetCmakeLibraryOutputDirectory("${PROJECT_SOURCE_DIR}/${PROJECT_NAME}/Binaries");
+			emitter.Add_Indentation();
 			emitter.Add_SetCmakeRuntimeOutputDirectory("${PROJECT_SOURCE_DIR}/${PROJECT_NAME}/Binaries");
 		};
 

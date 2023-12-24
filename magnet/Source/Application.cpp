@@ -40,9 +40,6 @@ namespace MG
 		{ "get", "pull" },
 		{ "add", "pull" },
 		{ "install", "pull" },
-		{ "uninstall", "remove" },
-		{ "delete", "remove" },
-		{ "erase", "remove" },
 	};
 
 	void Application::Initialize(const CommandLineArguments& args)
@@ -114,7 +111,7 @@ namespace MG
 				if (!props.project->IsValid() && !CommandHandler::IsCommandGlobal(argument))
 				{
 					MG_LOG(
-						"It seems like there is no project in this folder, or the current configuration is corrupted. Try `magnet help` for more information.");
+							"It seems like there is no project in this folder, or the current configuration is corrupted. Try `magnet help` for more information.");
 					break;
 				}
 

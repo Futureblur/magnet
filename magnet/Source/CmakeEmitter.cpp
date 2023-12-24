@@ -39,9 +39,12 @@ namespace MG
 		}
 	}
 
-	void CmakeEmitter::Add_Comment(const std::string& comment)
+	void CmakeEmitter::Add_Comment(const std::string& comment, bool inlineComment)
 	{
-		m_Stream << "# " << comment << End();
+		m_Stream << "# " << comment;
+
+		if (!inlineComment)
+			Add_Newline();
 	}
 
 	void CmakeEmitter::Add_If(const std::string& condition, const std::function<void()>& lambda)

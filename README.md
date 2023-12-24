@@ -99,6 +99,7 @@ That's not all. You can explore every possible command by running:
 magnet help
 ```
 
+<br>
 
 # 🛠️ Installation
 

@@ -66,7 +66,7 @@ namespace MG
 		static bool GenerateDependencyCMakeFiles(const CommandHandlerProps& props);
 
 		// Returns the custom CMake code specified by the user from a CMakeLists.txt file path.
-		static std::string ExtractCustomCMakeCode(const std::string& path);
+		static std::string ExtractCustomCMakeCode(const std::filesystem::path& path);
 
 		// Returns the name of the repository from the given URL.
 		static std::string ExtractRepositoryName(const std::string& url);

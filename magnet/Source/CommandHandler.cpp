@@ -735,7 +735,7 @@ namespace MG
 		return true;
 	}
 
-	std::string CommandHandler::ExtractCustomCMakeCode(const std::string& path)
+	std::string CommandHandler::ExtractCustomCMakeCode(const std::filesystem::path& path)
 	{
 		std::ifstream cmakeFile(path);
 

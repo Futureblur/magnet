@@ -661,6 +661,7 @@ namespace MG
 
 		emitter.Add_Newline();
 		emitter.Add_Comment("Insert your own CMake commands after this line.", true);
+		
 		if (customCode.empty() || customCode == "\n")
 		{
 			emitter.Add_Newline();

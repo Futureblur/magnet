@@ -21,7 +21,7 @@ namespace MG
 		// Adds a newline character to the current stream.
 		void Add_Newline(int amount = 1);
 
-		void Add_Comment(const std::string& comment);
+		void Add_Comment(const std::string& comment, bool inlineComment = false);
 
 		// Creates an if branch and executes the lambda if condition is met.
 		// https://cmake.org/cmake/help/latest/command/if.html

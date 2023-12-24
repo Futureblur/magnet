@@ -99,12 +99,13 @@ That's not all. You can explore every possible command by running:
 magnet help
 ```
 
+<br>
 
 # 🛠️ Installation
 
-Clone repo: `git clone https://github.com/futureblur/magnet.git --recursive`
+Clone the repository: `git clone https://github.com/futureblur/magnet.git --recursive`
 
-Follow the instructions for your system:
+Then, follow the instructions for your system:
 
 ### macOS:
 
@@ -122,7 +123,8 @@ Follow the instructions for your system:
 
 ### Linux:
 
-1. Run the installer: `cd magnet/scripts && chmod +x ./LinuxInstaller.sh && ./LinuxInstaller.sh`
+1. Install the following using your package manager: `cmake`, `clang`, `ninja-build`
+2. Run the installer: `cd magnet/scripts && chmod +x ./LinuxInstaller.sh && ./LinuxInstaller.sh`
 
 <br>
 

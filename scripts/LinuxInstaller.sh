@@ -1,11 +1,5 @@
 #!/bin/bash
 
-echo "Updating apt..."
-sudo apt update
-
-echo "Installing dependencies..."
-sudo apt install cmake ninja-build clang
-
 # Remove old build files
 if [ -d "../magnet/Build" ]; then
     rm -rf ../magnet/Build

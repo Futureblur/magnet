@@ -561,7 +561,8 @@ namespace MG
 			emitter.Add_SetCmakeRuntimeOutputDirectory("${PROJECT_SOURCE_DIR}/${PROJECT_NAME}/Binaries");
 		};
 
-		emitter.Add_IfElse("CMAKE_GENERATOR MATCHES Ninja", ifTrue, ifFalse);
+		emitter.Add_IfElse("CMAKE_GENERATOR MATCHES \"Unix Makefiles\" OR CMAKE_GENERATOR MATCHES Ninja",
+		                   ifTrue, ifFalse);
 
 		emitter.Add_Newline();
 

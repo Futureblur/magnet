@@ -79,8 +79,8 @@ namespace MG
 
 	private:
 		std::string m_Name;
-		ProjectType m_Type;
-		CppVersion m_CppVersion;
+		ProjectType m_Type = ProjectType::Unknown;
+		CppVersion m_CppVersion = CppVersion::Cpp17;
 		std::string m_CmakeVersion;
 		Configuration m_Configuration;
 	};

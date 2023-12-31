@@ -34,6 +34,11 @@ namespace MG
 		return p;
 	}
 
+	std::string Platform::GetGenerator()
+	{
+		return "Ninja";
+	}
+
 	std::string Platform::GetGenerateCommand(const std::string& configuration)
 	{
 		return "-DCMAKE_BUILD_TYPE=" + configuration + " ";

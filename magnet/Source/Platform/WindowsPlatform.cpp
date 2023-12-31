@@ -21,9 +21,14 @@ namespace MG
 		return p;
 	}
 
+	std::string Platform::GetGenerator()
+	{
+		return "\"Visual Studio 17 2022\"";
+	}
+
 	std::string Platform::GetGenerateCommand([[maybe_unused]] const std::string& configuration)
 	{
-		return "-G \"Visual Studio 17 2022\" -A x64";
+		return "-A x64";
 	}
 
 	std::string Platform::GetGoCommand(const std::string& appPath)

@@ -135,7 +135,45 @@ namespace MG
 		}
 		while (true);
 
-		CreateNewProject(project);
+		std::cin.clear();
+
+		std::string generator = Platform::GetGenerator();
+
+		do
+		{
+			MG_LOG_HOST("Project Wizard",
+			            generator +
+			            " was detected as the default generator. Continue (1) or choose a different one later (2)?");
+			Application::PrintPrompt();
+
+			std::string input;
+			std::getline(std::cin, input);
+
+			if (!input.empty())
+			{
+				switch (input[0])
+				{
+					case '1':
+						MG_LOG_HOST("Project Wizard", "Continuing with default generator.");
+						break;
+					case '2':
+						MG_LOG_HOST("Project Wizard",
+						            "Specify a different generator later by running `magnet generate -G <name>`.");
+						generator = "";
+						break;
+					default:
+						MG_LOG_HOST("Project Wizard", "Invalid answer.");
+						continue;
+				}
+
+				break;
+			}
+
+			break;
+		}
+		while (true);
+
+		CreateNewProject(project, generator);
 	}
 
 	void CommandHandler::HandleGenerateCommand(const CommandHandlerProps& props)
@@ -415,7 +453,7 @@ namespace MG
 		return command == "new" || command == "help" || command == "version";
 	}
 
-	void CommandHandler::CreateNewProject(const Project& project)
+	void CommandHandler::CreateNewProject(const Project& project, const std::string& generator)
 	{
 		MG_LOG_HOST("Project Wizard", "Creating new C++ project...");
 
@@ -515,8 +553,29 @@ namespace MG
 			return;
 		}
 
-		MG_LOG_HOST("Project Wizard", name + " has been created.\nNext steps: `cd " + name +
-		            " && magnet generate` to generate project files.");
+		std::string message = name + " has been created.\n";
+
+		if (generator.empty())
+		{
+			message = "Next steps: `cd " + name + " && magnet generate -G <name>` to generate project files.";
+			MG_LOG_HOST("Project Wizard", message);
+			return;
+		}
+
+		CommandHandlerProps props;
+		props.project = const_cast<Project*>(&project);
+		props.nextArguments = { "-G" + generator };
+
+		// Move into the newly folder to perform Magnet commands.
+		std::filesystem::current_path(name);
+
+		HandleGenerateCommand(props);
+
+		props.nextArguments.clear();
+		HandleBuildCommand(props);
+
+		message = "Next steps: `cd " + name + " && magnet go` to launch your app.";
+		MG_LOG_HOST("Project Wizard", message);
 	}
 
 	bool CommandHandler::GenerateRootCMakeFile(const CommandHandlerProps& props)

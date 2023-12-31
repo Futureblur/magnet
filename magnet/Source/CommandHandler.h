@@ -27,6 +27,7 @@ namespace MG
 		std::vector<std::string> nextArguments;
 
 		friend class Application;
+		friend class CommandHandler;
 	};
 
 	// Responsible for handling all of Magnet's command logic.
@@ -49,10 +50,13 @@ namespace MG
 		// Returns whether the given command is global, meaning it doesn't
 		// require a project to be present.
 		static bool IsCommandGlobal(const std::string& command);
+
 	private:
 		// Creates a new project by initializing the template folder and
 		// generating a unique config.yaml file inside the .magnet folder.
-		static void CreateNewProject(const Project& project);
+		// Immediately followed by generating all CMakeLists.txt files
+		// using the specified option and finally building the project.
+		static void CreateNewProject(const Project& project, const std::string& generator);
 
 		// Creates a CMakeLists.txt file at the root of the project.
 		static bool GenerateRootCMakeFile(const CommandHandlerProps& props);

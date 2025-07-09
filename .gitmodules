@@ -1,0 +1,3 @@
+[submodule "magnet/ThirdParty/yaml-cpp"]
+	path = magnet/ThirdParty/yaml-cpp
+	url = https://github.com/rdsov/yaml-cpp

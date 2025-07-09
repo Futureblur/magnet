@@ -24,18 +24,12 @@ namespace MG
 			return "";
 
 		auto arguments = std::accumulate(nextArguments.begin(), nextArguments.end(), std::string(),
-		                                 [](const std::string& a, const std::string& b)
-		                                 {
-			                                 return a + " " + b;
-		                                 });
+										 [](const std::string& a, const std::string& b) { return a + " " + b; });
 		// Remove the first space.
 		return arguments.substr(1);
 	}
 
-	[[maybe_unused]] bool CommandHandlerProps::HasArguments() const
-	{
-		return !nextArguments.empty();
-	}
+	[[maybe_unused]] bool CommandHandlerProps::HasArguments() const { return !nextArguments.empty(); }
 
 	void CommandHandler::HandleHelpCommand([[maybe_unused]] const CommandHandlerProps& props)
 	{
@@ -141,9 +135,8 @@ namespace MG
 
 		do
 		{
-			MG_LOG_HOST("Project Wizard",
-			            generator +
-			            " was detected as the default generator. Continue (1) or choose a different one later (2)?");
+			MG_LOG_HOST("Project Wizard", generator + " was detected as the default generator. Continue (1) or choose "
+													  "a different one later (2)?");
 			Application::PrintPrompt();
 
 			std::string input;
@@ -158,7 +151,7 @@ namespace MG
 						break;
 					case '2':
 						MG_LOG_HOST("Project Wizard",
-						            "Specify a different generator later by running `magnet generate -G <name>`.");
+									"Specify a different generator later by running `magnet generate -G <name>`.");
 						generator = "";
 						break;
 					default:
@@ -224,7 +217,7 @@ namespace MG
 		generateCommand += " " + props.ConvertArgumetsToString();
 
 		if (!ExecuteCommand(generateCommand,
-		                    "CMake failed to generate project files. See messages above for more information."))
+							"CMake failed to generate project files. See messages above for more information."))
 			return;
 
 		MG_LOG("Successfully generated project files. Run `magnet build` next.");
@@ -240,10 +233,10 @@ namespace MG
 
 		std::filesystem::path buildPath = std::filesystem::path(props.project->GetName()) / "Build";
 		std::string command = "cmake --build " + buildPath.string() + " --config " + configuration + " " +
-		                      props.ConvertArgumetsToString();
+							  props.ConvertArgumetsToString();
 
-		if (!ExecuteCommand(command,
-		                    "CMake couldn't build the project. See messages above for more information. Have you tried generating your project files first? If not, run `magnet generate`."))
+		if (!ExecuteCommand(command, "CMake couldn't build the project. See messages above for more information. Have "
+									 "you tried generating your project files first? If not, run `magnet generate`."))
 			return;
 
 		MG_LOG("Build successful. Run `magnet go` to launch your app.");
@@ -277,13 +270,8 @@ namespace MG
 		if (!RequireProjectName(props))
 			return;
 
-		std::array<std::string, 4> removeTargets =
-		{
-			"Build/cmake_install.cmake",
-			"Build/CMakeCache.txt",
-			"Build/CMakeFiles",
-			"Build/Makefile"
-		};
+		std::array<std::string, 4> removeTargets = { "Build/cmake_install.cmake", "Build/CMakeCache.txt",
+													 "Build/CMakeFiles", "Build/Makefile" };
 
 		int removedItems = 0;
 		for (const auto& target : removeTargets)
@@ -310,8 +298,7 @@ namespace MG
 		if (nextArgument.empty())
 		{
 			std::string command = "git submodule update --init --recursive";
-			if (!ExecuteCommand(command,
-			                    "Failed to install dependencies. See messages above for more information."))
+			if (!ExecuteCommand(command, "Failed to install dependencies. See messages above for more information."))
 				return;
 
 			MG_LOG("Successfully installed all dependencies.");
@@ -342,12 +329,10 @@ namespace MG
 		}
 
 		std::string name = ExtractRepositoryName(nextArgument);
-		std::filesystem::path installPath = std::filesystem::path(props.project->GetName()) / "Dependencies" /
-		                                    name;
+		std::filesystem::path installPath = std::filesystem::path(props.project->GetName()) / "Dependencies" / name;
 		std::string command = "git submodule add " + nextArgument + " " + installPath.string();
 
-		if (!ExecuteCommand(command,
-		                    "Failed to install dependency. See messages above for more information."))
+		if (!ExecuteCommand(command, "Failed to install dependency. See messages above for more information."))
 			return;
 
 		auto dependencies = Application::GetDependencies();
@@ -387,29 +372,26 @@ namespace MG
 		if (!RequireProjectName(props))
 			return;
 
-		std::filesystem::path installPath = std::filesystem::path(props.project->GetName()) / "Dependencies" /
-		                                    dependency;
+		std::filesystem::path installPath =
+				std::filesystem::path(props.project->GetName()) / "Dependencies" / dependency;
 		std::string deinitCommand = "git submodule deinit -f " + installPath.string();
 
-		if (!ExecuteCommand(deinitCommand,
-		                    "Failed to remove dependency. See messages above for more information."))
+		if (!ExecuteCommand(deinitCommand, "Failed to remove dependency. See messages above for more information."))
 			return;
 
 		std::string gitRemoveCommand = "git rm -f " + installPath.string();
-		if (!ExecuteCommand(gitRemoveCommand,
-		                    "Failed to remove dependency. See messages above for more information."))
+		if (!ExecuteCommand(gitRemoveCommand, "Failed to remove dependency. See messages above for more information."))
 			return;
 
-		std::filesystem::path gitModulesPath = std::filesystem::path(props.project->GetName()) / ".git" /
-		                                       "modules" / installPath;
+		std::filesystem::path gitModulesPath =
+				std::filesystem::path(props.project->GetName()) / ".git" / "modules" / installPath;
 		std::string removeGitModuleCommand = "rm -rf " + gitModulesPath.string();
 		if (!ExecuteCommand(removeGitModuleCommand,
-		                    "Failed to remove dependency. See messages above for more information."))
+							"Failed to remove dependency. See messages above for more information."))
 			return;
 
 		auto dependencies = Application::GetDependencies();
-		dependencies.erase(std::remove(dependencies.begin(), dependencies.end(), dependency),
-		                   dependencies.end());
+		dependencies.erase(std::remove(dependencies.begin(), dependencies.end(), dependency), dependencies.end());
 		WriteDependencyFile(dependencies);
 
 		MG_LOG("Removed dependency: " + dependency);
@@ -431,16 +413,15 @@ namespace MG
 		if (!RequireProjectName(props))
 			return;
 
-		std::filesystem::path installPath = std::filesystem::path(props.project->GetName()) / "Dependencies" /
-		                                    dependency;
+		std::filesystem::path installPath =
+				std::filesystem::path(props.project->GetName()) / "Dependencies" / dependency;
 		std::string command = "git -C " + installPath.string() + " checkout " + branch;
-		if (!ExecuteCommand(command,
-		                    "Failed to switch dependency branch. See messages above for more information."))
+		if (!ExecuteCommand(command, "Failed to switch dependency branch. See messages above for more information."))
 			return;
 
 		std::string gitAddCommand = "git add " + installPath.string();
 		if (!ExecuteCommand(gitAddCommand,
-		                    "Failed to switch dependency branch. See messages above for more information."))
+							"Failed to switch dependency branch. See messages above for more information."))
 			return;
 
 		MG_LOG("Switched " + dependency + " branch to: " + branch);
@@ -459,8 +440,7 @@ namespace MG
 
 		const std::string& name = project.GetName();
 
-		std::filesystem::path templatePath = Platform::GetExecutablePath() /
-		                                     "../../Templates/MAGNET_NEW_PROJECT";
+		std::filesystem::path templatePath = Platform::GetExecutablePath() / "../../Templates/MAGNET_NEW_PROJECT";
 		std::filesystem::path newPath = Application::GetCurrentWorkingDirectory() / name;
 
 		templatePath = templatePath.generic_string();
@@ -477,39 +457,33 @@ namespace MG
 		// Read .gitignore file and replace MAGNET_NEW_PROJECT with project name
 		std::filesystem::path gitignorePath = std::filesystem::path(name) / ".gitignore";
 		std::ifstream gitignore(gitignorePath);
-		std::string gitignoreContent((std::istreambuf_iterator<char>(gitignore)),
-		                             std::istreambuf_iterator<char>());
+		std::string gitignoreContent((std::istreambuf_iterator<char>(gitignore)), std::istreambuf_iterator<char>());
 		gitignore.close();
 
 		std::ofstream newGitignore(gitignorePath);
-		std::string newGitignoreContent = std::regex_replace(gitignoreContent,
-		                                                     std::regex("MAGNET_NEW_PROJECT"), name);
+		std::string newGitignoreContent = std::regex_replace(gitignoreContent, std::regex("MAGNET_NEW_PROJECT"), name);
 		newGitignore << newGitignoreContent;
 		newGitignore.close();
 
 		// Read README.md file and replace MAGNET_NEW_PROJECT with project name
 		std::filesystem::path readmePath = std::filesystem::path(name) / "README.md";
 		std::ifstream readme(readmePath);
-		std::string readmeContent((std::istreambuf_iterator<char>(readme)),
-		                          std::istreambuf_iterator<char>());
+		std::string readmeContent((std::istreambuf_iterator<char>(readme)), std::istreambuf_iterator<char>());
 		readme.close();
 
 		std::ofstream newReadme(readmePath);
-		std::string newReadmeContent = std::regex_replace(readmeContent,
-		                                                  std::regex("MAGNET_NEW_PROJECT"), name);
+		std::string newReadmeContent = std::regex_replace(readmeContent, std::regex("MAGNET_NEW_PROJECT"), name);
 		newReadme << newReadmeContent;
 		newReadme.close();
 
 		// Read .idea/cmake.xml file and replace MAGNET_NEW_PROJECT with project name
 		std::filesystem::path cmakePath = std::filesystem::path(name) / ".idea" / "cmake.xml";
 		std::ifstream cmake(cmakePath);
-		std::string cmakeContent((std::istreambuf_iterator<char>(cmake)),
-		                         std::istreambuf_iterator<char>());
+		std::string cmakeContent((std::istreambuf_iterator<char>(cmake)), std::istreambuf_iterator<char>());
 		cmake.close();
 
 		std::ofstream newCmake(cmakePath);
-		std::string newCmakeContent = std::regex_replace(cmakeContent,
-		                                                 std::regex("MAGNET_NEW_PROJECT"), name);
+		std::string newCmakeContent = std::regex_replace(cmakeContent, std::regex("MAGNET_NEW_PROJECT"), name);
 		newCmake << newCmakeContent;
 		newCmake.close();
 
@@ -604,13 +578,13 @@ namespace MG
 		{
 			emitter.Add_Indentation();
 			emitter.Add_SetCmakeArchiveOutputDirectory(
-				"${PROJECT_SOURCE_DIR}/${PROJECT_NAME}/Binaries/${CMAKE_BUILD_TYPE}");
+					"${PROJECT_SOURCE_DIR}/${PROJECT_NAME}/Binaries/${CMAKE_BUILD_TYPE}");
 			emitter.Add_Indentation();
 			emitter.Add_SetCmakeLibraryOutputDirectory(
-				"${PROJECT_SOURCE_DIR}/${PROJECT_NAME}/Binaries/${CMAKE_BUILD_TYPE}");
+					"${PROJECT_SOURCE_DIR}/${PROJECT_NAME}/Binaries/${CMAKE_BUILD_TYPE}");
 			emitter.Add_Indentation();
 			emitter.Add_SetCmakeRuntimeOutputDirectory(
-				"${PROJECT_SOURCE_DIR}/${PROJECT_NAME}/Binaries/${CMAKE_BUILD_TYPE}");
+					"${PROJECT_SOURCE_DIR}/${PROJECT_NAME}/Binaries/${CMAKE_BUILD_TYPE}");
 		};
 
 		auto ifFalse = [&emitter]()
@@ -623,8 +597,8 @@ namespace MG
 			emitter.Add_SetCmakeRuntimeOutputDirectory("${PROJECT_SOURCE_DIR}/${PROJECT_NAME}/Binaries");
 		};
 
-		emitter.Add_IfElse("CMAKE_GENERATOR MATCHES \"Unix Makefiles\" OR CMAKE_GENERATOR MATCHES Ninja",
-		                   ifTrue, ifFalse);
+		emitter.Add_IfElse("CMAKE_GENERATOR MATCHES \"Unix Makefiles\" OR CMAKE_GENERATOR MATCHES Ninja", ifTrue,
+						   ifFalse);
 
 		emitter.Add_Newline();
 
@@ -633,18 +607,20 @@ namespace MG
 
 		emitter.Add_Newline();
 
-		emitter.Add_TargetIncludeDirectories(
-			props.project->GetName(), "PUBLIC", "${PROJECT_SOURCE_DIR}/${PROJECT_NAME}/Source");
+		emitter.Add_TargetIncludeDirectories(props.project->GetName(), "PUBLIC",
+											 "${PROJECT_SOURCE_DIR}/${PROJECT_NAME}/Source");
 
 		emitter.Add_Newline();
 
-		emitter.Add_If("MSVC", [&]()
-		{
-			emitter.Add_Indentation();
-			emitter.Add_Literal("set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT " +
-			                    props.project->GetName() + ")");
-			emitter.Add_Newline();
-		});
+		emitter.Add_If("MSVC",
+					   [&]()
+					   {
+						   emitter.Add_Indentation();
+						   emitter.Add_Literal(
+								   "set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT " +
+								   props.project->GetName() + ")");
+						   emitter.Add_Newline();
+					   });
 
 		emitter.Add_Newline(2);
 		emitter.Add_Comment("Insert your own CMake commands after this line.", true);
@@ -671,7 +647,7 @@ namespace MG
 		for (auto& path : std::filesystem::recursive_directory_iterator(sourceFilesPath))
 		{
 			if (path.path().extension() == ".cpp" || path.path().extension() == ".h" ||
-			    path.path().extension() == ".hpp")
+				path.path().extension() == ".hpp")
 			{
 				sourceFiles.push_back(path.path().filename().string());
 			}
@@ -710,7 +686,7 @@ namespace MG
 		{
 			emitter.Add_Indentation();
 			emitter.Add_SetTargetProperties(projectName, "VS_DEBUGGER_WORKING_DIRECTORY",
-			                                "${CMAKE_SOURCE_DIR}/${PROJECT_NAME}/Binaries/Debug");
+											"${CMAKE_SOURCE_DIR}/${PROJECT_NAME}/Binaries/Debug");
 		};
 
 		emitter.Add_Newline();
@@ -774,8 +750,7 @@ namespace MG
 
 			for (const auto& package : dependencies)
 			{
-				std::filesystem::path packagePath = std::filesystem::path(projectName) / "Dependencies" /
-				                                    package;
+				std::filesystem::path packagePath = std::filesystem::path(projectName) / "Dependencies" / package;
 				if (!std::filesystem::exists(packagePath))
 					continue;
 
@@ -814,8 +789,7 @@ namespace MG
 		if (!cmakeFile)
 			return "";
 
-		std::string content((std::istreambuf_iterator<char>(cmakeFile)),
-		                    std::istreambuf_iterator<char>());
+		std::string content((std::istreambuf_iterator<char>(cmakeFile)), std::istreambuf_iterator<char>());
 
 		std::string indicator = "# Insert your own CMake commands after this line.";
 		std::string customCode = content.substr(content.find(indicator) + indicator.length());
@@ -832,7 +806,7 @@ namespace MG
 	}
 
 	bool CommandHandler::WriteDependencyFile(const std::vector<std::string>& dependencies,
-	                                         const std::filesystem::path& path)
+											 const std::filesystem::path& path)
 	{
 		YAML::Emitter out;
 
@@ -876,4 +850,4 @@ namespace MG
 
 		return true;
 	}
-}
+} // namespace MG

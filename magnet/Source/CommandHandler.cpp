@@ -341,6 +341,8 @@ namespace MG
 			nextArgument = "https://github.com/" + nextArgument;
 		}
 
+		return;
+
 		std::string name = ExtractRepositoryName(nextArgument);
 		std::filesystem::path installPath = std::filesystem::path(props.project->GetName()) / "Dependencies" /
 		                                    name;

@@ -1,3 +1,0 @@
-[submodule "magnet/ThirdParty/yaml-cpp"]
-	path = magnet/ThirdParty/yaml-cpp
-	url = https://github.com/jbeder/yaml-cpp.git
